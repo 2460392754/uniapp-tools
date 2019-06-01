@@ -2,9 +2,12 @@
  * @Description: uniapp request请求库 v1.0
  * @Author: pocky
  * @Date: 2019-05-31 19:18:48
- * @LastEditTime: 2019-06-01 18:59:22
+ * @LastEditTime: 2019-06-01 22:26:01
  * @LastEditors: Please set LastEditors
+ * @instruction：https://www.yuque.com/docs/share/79ba2a9c-fb1f-41d5-a1dc-18a6e2d9eda4
+ * @github: https://github.com/2460392754/uniapp-tools/tree/master/request
  */
+
 const commonRequest = Symbol('commonRequest'),
     commonConfig = Symbol('commonConfig'),
     joinUrl = Symbol('joinUrl'),
