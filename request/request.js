@@ -2,7 +2,7 @@
  * @Description: uniapp request请求库 v1.0
  * @Author: pocky
  * @Date: 2019-05-31 19:18:48
- * @LastEditTime: 2019-06-01 22:26:01
+ * @LastEditTime: 2019-06-02 15:39:01
  * @LastEditors: Please set LastEditors
  * @instruction：https://www.yuque.com/docs/share/79ba2a9c-fb1f-41d5-a1dc-18a6e2d9eda4
  * @github: https://github.com/2460392754/uniapp-tools/tree/master/request
@@ -12,7 +12,8 @@ const commonRequest = Symbol('commonRequest'),
     commonConfig = Symbol('commonConfig'),
     joinUrl = Symbol('joinUrl'),
     setContentType = Symbol('setContentType'),
-    interceptors = Symbol('interceptors');
+    interceptors = Symbol('interceptors'),
+    error = Symbol('error');
 
 class Request {
     // 初始化
@@ -40,7 +41,7 @@ class Request {
     // 设置配置数据
     setConfig (config = {}) {
         const newConfig = {};
-        let contentType = this[setContentType](newConfig.contentType);
+        let contentType = this[setContentType](config.contentType);
 
         newConfig.url = config.url || "";
         newConfig.dataType = config.dataType || "json";
@@ -56,16 +57,18 @@ class Request {
 
     // get请求
     get (config = {}) {
-        const newConfig = this[commonConfig](config, "get");
+        this.config = this[commonConfig](config, "get");
 
-        return this[commonRequest](newConfig);
+        return this[commonRequest](this.config);
     }
 
     // post请求
     post (config = {}) {
-        const newConfig = this[commonConfig](config, "post");
+        this.config = this[commonConfig](config, "post");
 
-        return this[commonRequest](newConfig);
+        console.log(this.config)
+
+        return this[commonRequest](this.config);
     }
 
     // 设置header中content-type参数,默认添加utf-8
@@ -79,7 +82,7 @@ class Request {
         } else if (type === "file") {
             str = 'multipart/form-data';
         } else {
-            throw new Error('[request] error: contentType参数错误')
+            this[error]("contentType参数错误");
         }
 
         str += ";charset=UTF-8";
@@ -87,13 +90,20 @@ class Request {
         return str;
     }
 
-    // 拼接 url
+    /**
+     * @description: 拼接 url, 自动判断添加斜杠 "/"
+     * @param {string} url 相对或绝对路径
+     * @return: 完整的绝对路径
+     */
     [joinUrl] (url) {
-        const isCompleteUrl = /(http|https):\/\/([\w.]+\/?)\S*/.test(url);
         const beforeUrlHasSlash = this.config.url.lastIndexOf('/') + 1 == this.config.url.length;
         const afterUrlHasSlash = url.indexOf('/') == 0;
 
-        if (isCompleteUrl) {
+        if (url.length === 0 || (this.config.url !== "" && !isCompleteUrl(this.config.url))) {
+            this[error]("url参数错误");
+        }
+
+        if (isCompleteUrl(url)) {
             return url;
         }
 
@@ -108,18 +118,30 @@ class Request {
         if (!beforeUrlHasSlash && !afterUrlHasSlash) {
             return this.config.url + '/' + url;
         }
+
+        function isCompleteUrl (str) {
+            return /(http|https):\/\/([\w.]+\/?)\S*/.test(str);
+        }
     }
 
-    // 公共配置
+    /**
+     * @description: 公共配置
+     * @todo: responseType参数配置无效
+     * @param {object} config 新的配置数据
+     * @param {string} method 请求类型 
+     * @return: return一个完整的配置数据
+     */
     [commonConfig] (config, method) {
         const newConfig = {};
         const url = this[joinUrl](config.url || "");
-        const contentType = this[setContentType](newConfig.contentType);
         const header = {
             ...this.config.header,
-            "content-type": contentType,
             ...config.header
         };
+
+        if (config.contentType && !(config.header && typeof config.header["content-type"]) === "undefined") {
+            header["content-type"] = this[setContentType](config.contentType);
+        }
 
         newConfig.url = url;
         newConfig.method = method;
@@ -190,6 +212,14 @@ class Request {
                 }
             });
         });
+    }
+
+    /**
+     * @description: 抛出错误
+     * @param {string} str 错误说明
+     */
+    [error] (str) {
+        throw new Error("[request error]: " + str)
     }
 }
 
