@@ -31,11 +31,24 @@ request.interceptors.response(res => {
 let e = Request
     .get({
         url: "/get",
+
+        // 实例里的header参数内容会覆盖全局里的header参数内容
         header: {
             "content-type": "application/json"
         },
         data: {
             name: "xxx",
+        },
+
+        // 对象内的回调函数优先级高于Promise
+        success: res => {
+            // do something
+        },
+        fail: res => {
+            // do something
+        },
+        complete: res => {
+            // do something
         }
     })
 
