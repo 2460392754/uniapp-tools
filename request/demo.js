@@ -28,35 +28,27 @@ request.interceptors.response(res => {
   return res;
 });
 
-request
-  .get({
-    url: "https://www.easy-mock.com/mock/xxxxxxxxx",
-    data: {
-      name: "xxx"
-    },
-  
-    // 实例里的header参数内容会覆盖全局里的header参数内容
-    header:{ 
-      "content-type": "application/json",
-      "token": "xxx"
-    },
-  
-    // 对象内的回调函数优先级高于Promise
-    success:res=>{
-      console.log(res);
-    },
-    fail:res=>{
-      console.log(res);
-    },
-    complete:res=>{
-      console.log(res);
-    }
-  })
+let e = Request
+    .get({
+        url: "/get",
+        header: {
+            "content-type": "application/json"
+        },
+        data: {
+            name: "xxx",
+        }
+    })
 
-  // 不运行
-  // .then(res => {
-  //     console.log(res)
-  // })
-  // .catch(res => {
-  //     console.log(res)
-  // });
+e
+    .then(res => {
+        // do something
+    })
+    .catch(res => {
+        // do something
+    })
+    .finally(() => {
+        // do something
+    })
+
+// 停止发送请求
+Request.stop(e)
