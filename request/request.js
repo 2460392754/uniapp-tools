@@ -16,8 +16,6 @@ const Request = (function () {
         interceptors = Symbol(),
         error = Symbol();
 
-    let example = null;
-
     return class {
         // 初始化
         constructor() {
