@@ -2,7 +2,7 @@
  * @Description: uniapp request请求库 v1.1
  * @Author: pocky
  * @Date: 2019-05-31 19:18:48
- * @LastEditTime: 2019-06-05 15:55:09
+ * @LastEditTime: 2019-06-05 18:01:13
  * @LastEditors: Please set LastEditors
  * @instruction：https://www.yuque.com/docs/share/79ba2a9c-fb1f-41d5-a1dc-18a6e2d9eda4
  * @github: https://github.com/2460392754/uniapp-tools/tree/master/request
@@ -201,27 +201,28 @@ const Request = (function () {
             return (function () {
                 if (!_request()) return false;
 
-                let obj = new Promise((resolve, reject) => {
-                    example = uni.request({
-                        ...config,
-                        success: res => {
-                            const newRes = _check(res);
+                let example,
+                    obj = new Promise((resolve, reject, ppp) => {
+                        example = uni.request({
+                            ...config,
+                            success: res => {
+                                const newRes = _check(res);
 
-                            if (!!!newRes) return false;
-                            config.success ? config.success(newRes) : resolve(newRes);
-                        },
-                        fail: res => {
-                            config.fail ? config.fail(res) : reject(res);
-                        },
-                        complete: res => {
-                            const newRes = _check(res);
+                                if (!!!newRes) return false;
+                                config.success ? config.success(newRes) : resolve(newRes);
+                            },
+                            fail: res => {
+                                config.fail ? config.fail(res) : reject(res);
+                            },
+                            complete: res => {
+                                const newRes = _check(res);
 
-                            if (!config.complete) return false;
-                            if (!!!newRes) return false;
-                            config.complete(newRes);
-                        }
+                                if (!config.complete) return false;
+                                if (!!!newRes) return false;
+                                config.complete(newRes);
+                            }
+                        });
                     });
-                });
 
                 obj.example = example;
 
