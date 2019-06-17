@@ -46,7 +46,7 @@ export default {
             this.$_setImgPath("loading");
 
             // 注册对象
-            global.$lazyLoad.registerImg(this.uuid, () => {
+            global.$lazyLoad.registerImg(this, this.uuid, () => {
                 this.startLoad = true;
 
                 return new Promise((resolve, reject) => {
