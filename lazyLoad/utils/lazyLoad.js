@@ -1,8 +1,8 @@
 /*
- * @Description: 图片懒加载、预加载 v1.0
+ * @Description: 图片懒加载、预加载 v1.1.1
  * @Author: pocky
  * @Date: 2019-06-12 18:47:15
- * @LastEditTime: 2019-06-17 11:38:49
+ * @LastEditTime: 2019-06-17 19:54:20
  * @instruction: https://www.yuque.com/docs/share/dca755d9-36e3-4312-8f7b-7e0b2579bc9b
  * @github: https://github.com/2460392754/uniapp-tools/tree/master/lazyLoad
  */
@@ -34,8 +34,8 @@ const LazyLoad = (function () {
         _logoutImg(count);
 
 
-        function _complete (item, ) {
-            return _checkNeedloadImgNode(item.uuid).then(async () => {
+        function _complete (item) {
+            return _checkNeedloadImgNode(item).then(async () => {
                 await item.fn();
             }).catch(() => {
                 return false;
@@ -49,10 +49,13 @@ const LazyLoad = (function () {
     }
 
     // 获取 nodeList 节点
-    function _getNodeList (selector) {
+    function _getNodeList (selector, that = null) {
         return new Promise(resolve => {
-            uni
-                .createSelectorQuery()
+            let view = uni.createSelectorQuery();
+
+            that && (view = view.in(that));
+
+            view
                 .selectAll(selector)
                 .fields({
                     rect: true,
@@ -64,9 +67,9 @@ const LazyLoad = (function () {
     }
 
     // 检查需要加载图片的节点
-    function _checkNeedloadImgNode (uuid) {
+    function _checkNeedloadImgNode (item) {
         return new Promise((resolve, reject) => {
-            _getNodeList("#" + uuid)
+            _getNodeList("#" + item.uuid, item.that)
                 .then(res => {
                     const [{ top }] = res;
 
@@ -104,8 +107,9 @@ const LazyLoad = (function () {
         }
 
         // 注册 图片对象
-        registerImg (uuid, fn) {
+        registerImg (that, uuid, fn) {
             loadImgArr.push({
+                that,
                 uuid,
                 fn
             });
