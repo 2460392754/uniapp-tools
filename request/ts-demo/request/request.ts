@@ -1,10 +1,10 @@
 /*
- * @Description: uniapp request请求库 v1.2
+ * @Description: uniapp request请求库 v1.2.1
  * @Author pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-05-31 19:18:48
- * @LastEditTime: 2019-07-29 11:15:32
- * @instruction https://www.yuque.com/docs/share/79ba2a9c-fb1f-41d5-a1dc-18a6e2d9eda4
+ * @LastEditTime: 2019-08-05 12:38:45
+ * @instruction https://www.yuque.com/pocky/aaeyux/neg4m1
  * @github https://github.com/2460392754/uniapp-tools/tree/master/request
  * @dcloud https://ext.dcloud.net.cn/plugin?id=468
  */

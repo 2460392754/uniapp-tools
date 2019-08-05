@@ -5,11 +5,11 @@ request.setConfig({
     url: 'https://easy-mock.com/mock/',  // 基地址
     // contentType: 'json',
     header: {
-        // token: 'xxx'
+        // uid:'xxxx'
     }
 });
 
-// 不return config或者return false, 都不会发生请求
+// 不return config或者return false, 都不会发送请求(例如配置token)
 request.addInterceptors.request(config => {
     return config;
 })
@@ -45,6 +45,5 @@ request.addInterceptors.response(res => {
 
     return Promise.reject(res)
 })
-
 
 export default request
