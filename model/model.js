@@ -3,9 +3,9 @@
  * @Author: pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-08-03 ‏‎00:46:12
- * @LastEditTime: 2019-08-05 10:07:19
+ * @LastEditTime: 2019-08-05 10:16:10
  * @instruction: https://www.yuque.com/pocky/aaeyux/yuh88a
- * @github: https://github.com/2460392754/uniapp-tools/tree/master/lazyLoad
+ * @github: https://github.com/2460392754/uniapp-tools/tree/master/model
  * @dcloud: 
  */
 
