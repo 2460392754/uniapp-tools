@@ -3,8 +3,8 @@
  * @Author pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-05-31 19:18:48
- * @LastEditTime: 2019-08-05 12:38:45
- * @instruction https://www.yuque.com/pocky/aaeyux/neg4m1
+ * @LastEditTime: 2019-08-05 12:44:41
+ * @instruction https://www.yuque.com/pocky/aaeyux/xwgrav
  * @github https://github.com/2460392754/uniapp-tools/tree/master/request
  * @dcloud https://ext.dcloud.net.cn/plugin?id=468
  */
