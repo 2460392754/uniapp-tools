@@ -5,7 +5,7 @@ request.setConfig({
     url: 'https://easy-mock.com/mock/',  // 基地址
     // contentType: 'json',
     header: {
-        // uid: 'xxx'
+        // uid:'xxxx'
     }
 });
 
@@ -14,7 +14,7 @@ request.addInterceptors.request(config => {
     return config;
 })
 
-// 不return res或者return false, 则都不会返回请求值
+// 不return res或者return false, 则都不会返回值
 // return Promise.reject('xxxxx')，主动抛出错误
 request.addInterceptors.response(res => {
     let firstCodeNum = String(res.statusCode).substr(0, 1)
@@ -41,10 +41,10 @@ request.addInterceptors.response(res => {
     if (JSON.stringify(res) === '{"errMsg":"request:fail abort"}') {
         // do something
         return false;
+        // return Promise.reject('xxxxxxxxx');
     }
 
     return Promise.reject(res)
 })
-
 
 export default request

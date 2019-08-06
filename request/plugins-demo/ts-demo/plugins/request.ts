@@ -1,20 +1,21 @@
 /*
- * @Description: uniapp request请求库 v1.2.1
+ * @Description: uniapp request请求库 v1.2.2
  * @Author pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-05-31 19:18:48
- * @LastEditTime: 2019-08-05 12:44:41
+ * @LastEditTime: 2019-08-06 16:07:39
  * @instruction https://www.yuque.com/pocky/aaeyux/xwgrav
  * @github https://github.com/2460392754/uniapp-tools/tree/master/request
  * @dcloud https://ext.dcloud.net.cn/plugin?id=468
  */
 
-// 全局方法 
+// 全局方法
 interface actionIFS {
     getConfig: Function,
     setConfig: Function,
 
     stop: Function,
+
     get: Function,
     post: Function,
 }
@@ -44,10 +45,11 @@ interface globalConfigIFS extends setConfigIFS {
 }
 
 // 请求类
-class Request implements actionIFS {
+class MyRequest implements actionIFS {
+    addInterceptors: interceptorsIFS;
+
     private _config: globalConfigIFS;
     private _interceptors: interceptorsIFS;
-    addInterceptors: interceptorsIFS;
 
     constructor() {
         this._config = {
@@ -74,50 +76,53 @@ class Request implements actionIFS {
     }
 
     // 获取全局配置
-    getConfig(): Object {
+    getConfig(): globalConfigIFS {
         return this._config;
     }
 
     // 设置全局配置
     setConfig(config: setConfigIFS = {}): void {
-        let defaultConfig: setConfigIFS = {
+        const defaultConfig: setConfigIFS = {
             url: '',
             dataType: 'json',
             responseType: 'text'
         }
-        let newConfig = (Object as any).assign(defaultConfig, config);
 
-        this._config = newConfig;
+        this._config = {
+            ...defaultConfig,
+            ...config
+        }
+    }
+
+    // 停止发送请求
+    stop(obj: any): void | never {
+        try {
+            if (obj.example.abort && typeof obj.example.abort === 'function') {
+                obj.example.abort();
+            }
+        } catch (err) {
+            this._error('参数错误, 无法停止发送请求')
+        }
     }
 
     // get请求
-    // get(config: globalConfigIFS): Object | boolean | Promise {
-    get(config: globalConfigIFS): any {
+    // get<T>(config: globalConfigIFS): Object | boolean | Promise<T> {
+    get<T>(config: globalConfigIFS): any {
         const newConfig = this._mergeConfig(config, 'get');
 
         return this._request(newConfig);
     }
 
     // post请求
-    // post(config: globalConfigIFS): Object | boolean| Promise  {
-    post(config: globalConfigIFS): any {
+    // post<T>(config: globalConfigIFS): Object | boolean | Promise<T> {
+    post<T>(config: globalConfigIFS): any {
         const newConfig = this._mergeConfig(config, 'post');
 
         return this._request(newConfig);
     }
 
-    // 停止发送请求
-    // stop({ example = undefined as Object }): void | never {
-    stop(obj: any): void | never {
-        if (obj && obj.example && obj.example.abort) {
-            obj.example.abort();
-        } else {
-            this._error('参数错误, 无法停止发送请求');
-        }
-    }
-
-    // 拼接 url，返回完整的资源定位符(url)
-    private _joinUrl(url: string): string | never {
+    // 合并url，返回完整的资源定位符
+    private _mergeUrl(url: string): string | never {
         const configUrl = this._config.url;
         const beforeUrlHasSlash: boolean = configUrl.lastIndexOf('/') + 1 === configUrl.length;
         const afterUrlHasSlash: boolean = url.indexOf('/') === 0;
@@ -138,8 +143,9 @@ class Request implements actionIFS {
             return configUrl + url;
         }
 
-        // !beforeUrlHasSlash && !afterUrlHasSlash
-        return configUrl + '/' + url;
+        if (!beforeUrlHasSlash && !afterUrlHasSlash) {
+            return configUrl + '/' + url;
+        }
     }
 
     // 是否是完整的 url 
@@ -147,29 +153,35 @@ class Request implements actionIFS {
         return /(http|https):\/\/([\w.]+\/?)\S*/.test(url);
     }
 
-    // 合并header中content-type参数,默认添加utf-8
-    private _mergeContentType(type: string = 'form'): string {
-        let str = "";
+    // 合并header中content-type参数, 默认添加utf-8
+    private _mergeContentType(type: string = 'form'): string | never {
+        let tmpStr = '';
 
-        if (type === "form" || typeof type === "undefined") {
-            str = 'application/x-www-form-urlencoded';
-        } else if (type === "json") {
-            str = 'application/json';
-        } else if (type === "file") {
-            str = 'multipart/form-data';
-        } else {
-            this._error("contentType参数错误");
+        switch (type) {
+            case 'form' || 'undefined':
+                tmpStr = 'application/x-www-form-urlencoded';
+                break;
+
+            case 'json':
+                tmpStr = 'application/json';
+                break;
+
+            case 'file':
+                tmpStr = 'multipart/form-data';
+                break;
+
+            default:
+                this._error("contentType参数错误");
         }
 
-        str += ";charset=UTF-8";
-
-        return str;
+        return tmpStr + ";charset=UTF-8";
     }
 
-    // 合并配置（全局配置+实例中的配置,实例中的优先级更高）
+    // 合并配置（全局配置+实例中的配置, 实例中的优先级更高）
     private _mergeConfig(config: globalConfigIFS, method: string): Object {
-        const url: string = this._joinUrl(config.url);
-        const contentType = this._mergeContentType(config.contentType || this._config.contentType);
+        const url: string = this._mergeUrl(config.url);
+        const contentType: string = this._mergeContentType(config.contentType || this._config.contentType);
+
         const header: Object = {
             'content-type': contentType,
             ...this._config.header,
@@ -200,8 +212,7 @@ class Request implements actionIFS {
     }
 
     // 响应拦截器
-    // private _interceptorsRep(res: Object): Object | boolean | Promise {
-    private _interceptorsRep(res: Object): any {
+    private _interceptorsRep<T>(res: Object): Object | boolean | Promise<T> {
         if (typeof this._interceptors.response === 'function') {
             let ret = this._interceptors.response(res);
 
@@ -211,50 +222,67 @@ class Request implements actionIFS {
         return res;
     }
 
+    // xhr数据回传成功
+    private _xhrSuccess(res: Object, config: globalConfigIFS, canRetRep: Object | any, resolve: Function, reject: Function) {
+        let newRes = this._interceptorsRep(res);
+
+        if (!!!newRes) {
+            canRetRep.state = false;
+            return false;
+        }
+
+        // 给 callback 回调方法添加捕获错误方法
+        if (Object.prototype.toString.call(newRes) === '[object Promise]') {
+            // config.fail && (newRes as any).catch(config.fail)
+            // config.fail && newRes.catch(config.fail)
+            (newRes as any).catch(config.fail || reject);
+
+            return false;
+        }
+
+        config.success ? config.success(newRes) : resolve(newRes);
+    }
+
+    // xhr数据回传失败
+    private _xhrFail(err: Object, config: globalConfigIFS, canRetRep: Object | any, reject: Function) {
+        let newErr = this._interceptorsRep(err);
+
+        if (!!!newErr) {
+            canRetRep.state = false;
+            return false;
+        }
+
+        config.fail ? config.fail(newErr) : reject(newErr)
+    }
+
+    // xhr数据回传成功或失败
+    private _xhrComplete(res: Object, config: globalConfigIFS, canRetRep: Object | any) {
+        if (!config.complete || !canRetRep.state) return false;
+
+        config.complete(res);
+    }
+
     // 公共请求方法, 支持对象中callback或Promise
     private _request(config: any | Object): Object | undefined {
-        let canRetRep: boolean = true,
+        let canRetRep: Object = { state: true },
             example: Object,
             ret: Object;
 
         if (!this._interceptorsReq(config)) return;
 
-        ret = new Promise((resolve, reject) => {
+        ret = new Promise<Object>((resolve, reject) => {
             // @ts-ignore
             example = uni.request({
                 ...config,
 
-                // success:  (res: Object): void | boolean => {
                 success: (res: Object) => {
-                    let newRes = this._interceptorsRep(res);
-
-                    if (!!!newRes) {
-                        canRetRep = false;
-                        return false;
-                    }
-
-                    // 给 callback 回调方法添加捕获错误方法
-                    if (Object.prototype.toString.call(newRes) === '[object Promise]') {
-                        config.fail && newRes.catch(config.fail)
-                        return false;
-                    }
-
-                    config.success ? config.success(newRes) : resolve(newRes);
+                    this._xhrSuccess(res, config, canRetRep, resolve, reject)
                 },
                 fail: (err: Object): void | boolean => {
-                    let newErr = this._interceptorsRep(err);
-
-                    if (!!!newErr) {
-                        canRetRep = false;
-                        return false;
-                    }
-
-                    config.fail ? config.fail(newErr) : reject(newErr)
+                    this._xhrFail(err, config, canRetRep, reject)
                 },
                 complete: (res: Object): void | boolean => {
-                    if (!config.complete || !canRetRep) return false;
-
-                    config.complete(res);
+                    this._xhrComplete(res, config, canRetRep)
                 }
             });
         });
@@ -270,8 +298,8 @@ class Request implements actionIFS {
 
     // 抛出错误
     private _error(str: string): never {
-        throw new Error('[request error]: ' + str);
+        throw ('[request error]: ' + str);
     }
 }
 
-export default new Request();
+export default new MyRequest();

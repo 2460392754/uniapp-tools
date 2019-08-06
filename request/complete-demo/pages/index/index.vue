@@ -3,15 +3,15 @@
 </template>
 
 <script>
-import request from "../../js/request/index";
+import request from '../../plugins/request/js/index'
 
 export default {
     methods: {
         $_callback () {
             let r = request.get({
-                url: "https://easy-mock.com/mock/5cda87e31d38be0d2dd91a44/example/get",
+                // url: "https://easy-mock.com/mock/5cda87e31d38be0d2dd91a44/example/get",
                 // url: "/5cda87e31d38be0d2dd91a44/example/get",
-                // url: "/5cda87e31d38be0d2dd91a44/example/get_400",
+                url: "/5cda87e31d38be0d2dd91a44/example/get_400",
                 data: {
                     a: "aaaa"
                 },
@@ -32,8 +32,9 @@ export default {
 
         $_promise () {
             let r = request
-                .post({
-                    url: "/5cda87e31d38be0d2dd91a44/example/post"
+                .get({
+                    // url: "https://easy-mock.com/mock/5cda87e31d38be0d2dd91a44/example/get",
+                    url: "/5cda87e31d38be0d2dd91a44/example/get_400",
                 })
                 .then(res => {
                     console.log("then: ", res);

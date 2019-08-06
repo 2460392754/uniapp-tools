@@ -1,15 +1,15 @@
 /*
- * @Description: uniapp request请求库 v1.2.1
+ * @Description: uniapp request请求库 v1.2.2
  * @Author pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-05-31 19:18:48
- * @LastEditTime: 2019-08-05 12:44:38
+ * @LastEditTime: 2019-08-06 16:00:41
  * @instruction https://www.yuque.com/pocky/aaeyux/xwgrav
  * @github https://github.com/2460392754/uniapp-tools/tree/master/request
  * @dcloud https://ext.dcloud.net.cn/plugin?id=468
  */
 
-class Request {
+class MyRequest {
     addInterceptors;
 
     constructor() {
@@ -36,12 +36,10 @@ class Request {
             responseType: 'text'
         }
 
-        let newConfig = {
+        _.config = {
             ...defaultConfig,
             ...config
         }
-
-        _.config = newConfig;
     }
 
     // get请求
@@ -60,10 +58,12 @@ class Request {
 
     // 停止发送请求
     stop (obj) {
-        if (obj && obj.example && obj.example.abort) {
-            obj.example.abort();
-        } else {
-            _.error('参数错误, 无法停止发送请求');
+        try {
+            if (obj.example.abort && typeof obj.example.abort === 'function') {
+                obj.example.abort();
+            }
+        } catch (err) {
+            _._error('参数错误, 无法停止发送请求')
         }
     }
 }
@@ -75,7 +75,7 @@ var _ = {
         responseType: '',
         header: {},
         data: {},
-        contentType: undefined,
+        contentType: 'form',
     },
 
     interceptors: {
@@ -83,11 +83,11 @@ var _ = {
         response: null
     },
 
-    // 拼接 url，返回完整的资源定位符(url)
-    joinUrl: function (url) {
-        let configUrl = _.config.url,
-            beforeUrlHasSlash = configUrl.lastIndexOf('/') + 1 === configUrl.length,
-            afterUrlHasSlash = url.indexOf('/') === 0;
+    // 合并url，返回完整的资源定位符
+    mergeUrl (url) {
+        const configUrl = _.config.url;
+        const beforeUrlHasSlash = configUrl.lastIndexOf('/') + 1 === configUrl.length;
+        const afterUrlHasSlash = url.indexOf('/') === 0;
 
         if (url.length === 0 || !_.isCompleteUrl(configUrl)) {
             _.error('url参数不完整或者错误');
@@ -111,51 +111,57 @@ var _ = {
     },
 
     // 是否是完整的 url 
-    isCompleteUrl: function (url) {
+    isCompleteUrl (url) {
         return /(http|https):\/\/([\w.]+\/?)\S*/.test(url);
     },
 
-    // 合并header中content-type参数,默认添加utf-8
-    mergeContentType: function (type = 'form') {
-        let str = "";
+    // 合并header中content-type参数, 默认添加utf-8
+    mergeContentType (type = 'form') {
+        let tmpStr = '';
 
-        if (type === "form" || typeof type === "undefined") {
-            str = 'application/x-www-form-urlencoded';
-        } else if (type === "json") {
-            str = 'application/json';
-        } else if (type === "file") {
-            str = 'multipart/form-data';
-        } else {
-            _.error("contentType参数错误");
+        switch (type) {
+            case 'form' || 'undefined':
+                tmpStr = 'application/x-www-form-urlencoded';
+                break;
+
+            case 'json':
+                tmpStr = 'application/json';
+                break;
+
+            case 'file':
+                tmpStr = 'multipart/form-data';
+                break;
+
+            default:
+                _.error("contentType参数错误");
         }
 
-        str += ";charset=UTF-8";
-
-        return str;
+        return tmpStr + ";charset=UTF-8";
     },
 
     // 合并配置（全局配置+实例中的配置,实例中的优先级更高）
-    mergeConfig: function (config, method) {
-        let url = _.joinUrl(config.url),
-            contentType = _.mergeContentType(config.contentType || _.config.contentType),
-            header = {
-                'content-type': contentType,
-                ..._.config.header,
-                ...config.header
-            },
-            newConfig = {
-                ...config,
-                ..._.config,
-                url,
-                method,
-                header
-            }
+    mergeConfig (config, method) {
+        const url = _.mergeUrl(config.url);
+        const contentType = _.mergeContentType(config.contentType || _.config.contentType);
+        const header = {
+            'content-type': contentType,
+            ..._.config.header,
+            ...config.header
+        };
+
+        const newConfig = {
+            ...config,
+            ..._.config,
+            url,
+            method,
+            header
+        }
 
         return newConfig;
     },
 
     // 请求拦截器
-    interceptorsReq: function (config) {
+    interceptorsReq (config) {
         if (typeof _.interceptors.request === 'function') {
             let ret = _.interceptors.request(config);
 
@@ -167,7 +173,7 @@ var _ = {
     },
 
     // 响应拦截器
-    interceptorsRep: function (res) {
+    interceptorsRep (res) {
         if (typeof _.interceptors.response === 'function') {
             let ret = _.interceptors.response(res);
 
@@ -177,11 +183,48 @@ var _ = {
         return res;
     },
 
+    // xhr数据回传成功
+    xhrSuccess (res, config, canRetRep, resolve, reject) {
+        let newRes = _.interceptorsRep(res);
+
+        if (!!!newRes) {
+            canRetRep.state = false;
+            return false;
+        }
+
+        if (Object.prototype.toString.call(newRes) === '[object Promise]') {
+            newRes.catch(config.fail || reject);
+
+            return false;
+        }
+
+        config.success ? config.success(newRes) : resolve(newRes);
+    },
+
+    // xhr数据回传失败
+    xhrFail (err, config, canRetRep, reject) {
+        let newErr = _.interceptorsRep(err);
+
+        if (!!!newErr) {
+            canRetRep.state = false;
+            return false;
+        }
+
+        config.fail ? config.fail(newErr) : reject(newErr)
+    },
+
+    // xhr数据回传成功或失败
+    xhrComplete (res, config, canRetRep) {
+        if (!config.complete || !canRetRep.state) return false;
+
+        config.complete(res);
+    },
+
     // 公共请求方法, 支持对象中callback或Promise
-    request: function (config) {
-        let canRetRep = true,
-            example,
-            ret;
+    request (config) {
+        let canRetRep = { state: true };
+        let example;
+        let ret;
 
         if (!_.interceptorsReq(config)) return;
 
@@ -190,37 +233,16 @@ var _ = {
                 ...config,
 
                 success: res => {
-                    let newRes = _.interceptorsRep(res);
-
-                    if (!!!newRes) {
-                        canRetRep = false;
-                        return false;
-                    }
-
-                    if (Object.prototype.toString.call(newRes) === '[object Promise]') {
-                        config.fail && newRes.catch(config.fail)
-                        return false;
-                    }
-
-                    config.success ? config.success(newRes) : resolve(newRes);
+                    _.xhrSuccess(res, config, canRetRep, resolve, reject);
                 },
                 fail: err => {
-                    let newErr = _.interceptorsRep(err);
-
-                    if (!!!newErr) {
-                        canRetRep = false;
-                        return false;
-                    }
-
-                    config.fail ? config.fail(newErr) : reject(newErr)
+                    _.xhrFail(err, config, canRetRep, reject);
                 },
                 complete: res => {
-                    if (!config.complete || !canRetRep) return false;
-
-                    config.complete(res);
+                    _.xhrComplete(res, config, canRetRep);
                 }
-            });
-        });
+            })
+        })
 
         /**
          * @todo 修改了__proto__(隐式原型)的属性
@@ -232,9 +254,9 @@ var _ = {
     },
 
     // 抛出错误
-    error: function (str) {
-        throw new Error('[request error]: ' + str);
+    error (str) {
+        throw ('[request error]: ' + str)
     }
 }
 
-export default new Request();
+export default new MyRequest();

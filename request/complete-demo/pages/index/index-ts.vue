@@ -4,16 +4,16 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import request from "../../ts/request/index";
+// import request from "../../ts/request/index";
+import request from "../../plugins/request/ts/index";
 
 @Component
 export default class index extends Vue {
     private $_callback() {
         let r = request.get({
-            url:
-                "https://easy-mock.com/mock/5cda87e31d38be0d2dd91a44/example/get",
+            // url:"https://easy-mock.com/mock/5cda87e31d38be0d2dd91a44/example/get",
             // url: "/5cda87e31d38be0d2dd91a44/example/get",
-            // url: "/5cda87e31d38be0d2dd91a44/example/get_400",
+            url: "/5cda87e31d38be0d2dd91a44/example/get_400",
             data: {
                 a: "aaaa"
             },
@@ -34,8 +34,9 @@ export default class index extends Vue {
 
     private $_promise() {
         let r = request
-            .post({
-                url: "/5cda87e31d38be0d2dd91a44/example/post"
+            .get({
+                url: "/5cda87e31d38be0d2dd91a44/example/get"
+                // url: "/5cda87e31d38be0d2dd91a44/example/get_400"
             })
             .then(res => {
                 console.log("then: ", res);
@@ -51,8 +52,8 @@ export default class index extends Vue {
     }
 
     created() {
-        this.$_callback();
-        // this.$_promise();
+        // this.$_callback();
+        this.$_promise();
     }
 }
 </script>

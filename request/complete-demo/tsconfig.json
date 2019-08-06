@@ -1,0 +1,64 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        // 允许编译javascript文件。
+        "allowJs": true,
+        // 在 .js文件中报告错误。与 --allowJs配合使用。
+        // "checkJs": true,
+        // node_modules依赖的最大搜索深度并加载JavaScript文件。仅适用于 --allowJs。
+        "maxNodeModuleJsDepth": 0,
+        // 生成相应的 .d.ts文件。
+        // "declaration": true,
+        // 生成声明文件的输出路径。
+        // "declarationDir": "./@types/",
+        // 允许从没有设置默认导出的模块中默认导入。这并不影响代码的显示，仅为了类型检查。
+        // "allowSyntheticDefaultImports": true,
+        // 编译目标平台与 Vue 的浏览器支持保持一致
+        "target": "es5",
+        // 打印出编译后生成文件的名字
+        "listEmittedFiles": false,
+        // 编译过程中打印文件名。
+        "listFiles": false,
+        // 显示诊断信息。
+        "diagnostics": false,
+        // 以严格模式解析并为每个源文件生成 "use strict"语句
+        "alwaysStrict": true,
+        // 解析非相对模块名的基准目录。查看 模块解析文档了解详情。
+        "baseUrl": "./",
+        // 输入文件的字符集。
+        "charset": "utf8",
+        // 不报告未使用的标签错误。
+        "allowUnusedLabels": true,
+        // 不报告执行不到的代码错误
+        "allowUnreachableCode": true,
+        // 为 false 时，如果编译器无法根据变量的使用来判断类型时，将用 any 类型代替。为 true 时，进行强类型检查，会报错
+        "noImplicitAny": false,
+        // 指定生成哪个模块系统代码
+        "module": "commonjs",
+        // 编译 js 的时候，删除掉注释
+        "removeComments": false,
+        // 生成相应的.map文件
+        "sourceMap": true,
+        // js编译的目录,
+        // "outDir": "js",
+        "outDir": "./dist/out-tsc",
+        // 禁用JavaScript工程体积大小的限制
+        "disableSizeLimit": false,
+        // 这可以对 `this` 上的数据属性进行更严格的推断
+        // "strict": true,
+        // 模块的解析
+        "moduleResolution": "node",
+        // 装饰器的语法
+        "experimentalDecorators": true,
+        // 添加需要的解析的语法，否则TS会检测出错。
+        "lib": [
+            "dom",
+            "es6",
+            "es7",
+        ],
+    },
+    // "include": [
+    //     "./src/**/*",
+    //     "ts/global.d.ts"
+    // ]
+}

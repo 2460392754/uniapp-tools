@@ -41,6 +41,7 @@ request.addInterceptors.response(res => {
     if (JSON.stringify(res) === '{"errMsg":"request:fail abort"}') {
         // do something
         return false;
+        // return Promise.reject('xxxxxxxxx');
     }
 
     return Promise.reject(res)
