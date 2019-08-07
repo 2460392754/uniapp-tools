@@ -1,10 +1,10 @@
 /*
- * @Description: uniapp request请求库 v1.2.2
+ * @Description: uniapp request请求库 v1.3
  * @Author pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-05-31 19:18:48
- * @LastEditTime: 2019-08-06 16:00:41
- * @instruction https://www.yuque.com/pocky/aaeyux/xwgrav
+ * @LastEditTime: 2019-08-07 16:43:36
+ * @instruction https://www.yuque.com/pocky/aaeyux/pdik23
  * @github https://github.com/2460392754/uniapp-tools/tree/master/request
  * @dcloud https://ext.dcloud.net.cn/plugin?id=468
  */
@@ -21,6 +21,12 @@ class MyRequest {
                 _.interceptors.response = fn;
             }
         }
+    }
+
+    // 添加全局拦截器
+    addGlobalInterce ({ request, response } = {}) {
+        _.interceptors.global.request = request
+        _.interceptors.global.response = response
     }
 
     // 获取全局配置
@@ -80,7 +86,11 @@ var _ = {
 
     interceptors: {
         request: null,
-        response: null
+        response: null,
+        global: {
+            request: null,
+            response: null,
+        }
     },
 
     // 合并url，返回完整的资源定位符
@@ -89,7 +99,7 @@ var _ = {
         const beforeUrlHasSlash = configUrl.lastIndexOf('/') + 1 === configUrl.length;
         const afterUrlHasSlash = url.indexOf('/') === 0;
 
-        if (url.length === 0 || !_.isCompleteUrl(configUrl)) {
+        if (url.length === 0 || (configUrl.length !== 0 && !_.isCompleteUrl(configUrl))) {
             _.error('url参数不完整或者错误');
         }
 
@@ -145,8 +155,8 @@ var _ = {
         const contentType = _.mergeContentType(config.contentType || _.config.contentType);
         const header = {
             'content-type': contentType,
+            ...config.header,
             ..._.config.header,
-            ...config.header
         };
 
         const newConfig = {
@@ -157,35 +167,71 @@ var _ = {
             header
         }
 
+        delete newConfig.contentType
+
         return newConfig;
     },
 
     // 请求拦截器
-    interceptorsReq (config) {
-        if (typeof _.interceptors.request === 'function') {
-            let ret = _.interceptors.request(config);
+    interceptorsReq (config, n = 0) {
+        let type = '.request';
+        let fnName = `interceptors${n === 1 ? ".global" + type : type}`;
+        let fn = _.getinterceptorsFn(fnName)
 
-            if (!ret) return false;
-            config = ret;
+        if (typeof fn === 'function') {
+            let ret = fn(config);
+
+            if (ret === false || typeof ret === 'undefined') {
+                return false;
+            }
+
+            return n === 0 ? ret : _.interceptorsReq(ret)
         }
 
-        return true;
+        if (n === 0) return config;
+        return _.interceptorsReq(config);
     },
 
     // 响应拦截器
-    interceptorsRep (res) {
-        if (typeof _.interceptors.response === 'function') {
-            let ret = _.interceptors.response(res);
+    interceptorsRep (res, n = 0) {
+        let type = `.response`;
+        let fnName = `interceptors${n === 1 ? ".global" + type : type}`;
+        let fn = _.getinterceptorsFn(fnName)
 
-            return ret ? ret : false;
+        if (typeof fn === 'function') {
+            let ret = fn(res);
+
+            // 返回promise中reject的值
+            if (Object.prototype.toString.call(ret) === '[object Promise]') {
+                return ret;
+            }
+
+            if (ret === false || typeof ret === 'undefined') {
+                return false;
+            }
+
+            return n === 0 ? ret : _.interceptorsRep(ret);
         }
 
-        return res;
+        if (n === 0) return res;
+        return _.interceptorsReq(res);
+    },
+
+    // 获取拦截器的函数
+    getinterceptorsFn (fnName) {
+        let splitArr = fnName.split('.');
+        let tmpObj = _;
+
+        for (let name of splitArr) {
+            tmpObj = tmpObj[name];
+        }
+
+        return tmpObj;
     },
 
     // xhr数据回传成功
     xhrSuccess (res, config, canRetRep, resolve, reject) {
-        let newRes = _.interceptorsRep(res);
+        let newRes = _.interceptorsRep(res, 1);
 
         if (!!!newRes) {
             canRetRep.state = false;
@@ -203,10 +249,16 @@ var _ = {
 
     // xhr数据回传失败
     xhrFail (err, config, canRetRep, reject) {
-        let newErr = _.interceptorsRep(err);
+        let newErr = _.interceptorsRep(err, 1);
 
         if (!!!newErr) {
             canRetRep.state = false;
+            return false;
+        }
+
+        if (Object.prototype.toString.call(newErr) === '[object Promise]') {
+            newErr.catch(config.fail || reject);
+
             return false;
         }
 
@@ -226,7 +278,8 @@ var _ = {
         let example;
         let ret;
 
-        if (!_.interceptorsReq(config)) return;
+        config = _.interceptorsReq(config, 1);
+        if (config === false) return;
 
         ret = new Promise((resolve, reject) => {
             example = uni.request({
@@ -259,4 +312,4 @@ var _ = {
     }
 }
 
-export default new MyRequest();
+export default MyRequest;

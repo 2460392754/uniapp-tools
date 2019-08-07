@@ -3,56 +3,51 @@
 </template>
 
 <script>
-import request from '../../plugins/request/js/index'
+import request from '../../xhr/index.xhr.js'
 
 export default {
     methods: {
-        $_callback () {
-            let r = request.get({
-                // url: "https://easy-mock.com/mock/5cda87e31d38be0d2dd91a44/example/get",
-                // url: "/5cda87e31d38be0d2dd91a44/example/get",
-                url: "/5cda87e31d38be0d2dd91a44/example/get_400",
-                data: {
-                    a: "aaaa"
-                },
-                contentType: "form",
+        getMockDataMethodGet () {
+            request.getMockDataMethodGet({
                 success: res => {
-                    console.log("success", res);
+                    console.log('👍👍👍👍👍 success callback')
                 },
                 fail: err => {
-                    console.log("fail", err);
+                    console.log('⛔⛔⛔⛔⛔ fail callback')
                 },
                 complete: res => {
-                    console.log("complete: ", res);
+                    console.log('😐😐😐😐😐 complete callback')
                 }
             });
-
-            // request.stop(r);
         },
 
-        $_promise () {
-            let r = request
-                .get({
-                    // url: "https://easy-mock.com/mock/5cda87e31d38be0d2dd91a44/example/get",
-                    url: "/5cda87e31d38be0d2dd91a44/example/get_400",
-                })
+        getMockDataMethodPost () {
+            request.getMockDataMethodPost()
+        },
+
+        getMockErrDataMethodGet () {
+            request.getMockErrDataMethodGet();
+        },
+
+        getMockDataMethodGetPromise () {
+            request.getMockDataMethodGetPromise()
                 .then(res => {
-                    console.log("then: ", res);
+                    console.log('👍👍👍👍👍 then', res)
                 })
                 .catch(err => {
-                    console.log("catch", err);
+                    console.log('⛔⛔⛔⛔⛔ catch', err)
                 })
                 .finally(() => {
-                    console.log("is finally");
-                });
-
-            // request.stop(r);
+                    console.log('😐😐😐😐😐 finally')
+                })
         }
     },
 
     created () {
-        this.$_callback();
-        // this.$_promise();
+        // this.getMockDataMethodGet();
+        // this.getMockDataMethodPost();
+        // this.getMockErrDataMethodGet();
+        // this.getMockDataMethodGetPromise();
     }
 }
 </script>

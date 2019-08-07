@@ -5,12 +5,6 @@
             "style": {
                 "navigationBarTitleText": "js"
             }
-        },
-        {
-            "path": "pages/index/index-ts",
-            "style": {
-                "navigationBarTitleText": "ts"
-            }
         }
     ],
     "globalStyle": {
