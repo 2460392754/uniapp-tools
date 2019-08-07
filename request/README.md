@@ -15,7 +15,7 @@
 [https://ext.dcloud.net.cn/plugin?id=468&update_log](https://ext.dcloud.net.cn/plugin?id=468&update_log)
 
 ## 文档和demo
-[https://www.yuque.com/pocky/aaeyux/xwgrav](https://www.yuque.com/pocky/aaeyux/xwgrav)
+[https://www.yuque.com/pocky/aaeyux/pdik23](https://www.yuque.com/pocky/aaeyux/pdik23)
 
 ## dcloud商店
 [https://ext.dcloud.net.cn/plugin?id=468](https://ext.dcloud.net.cn/plugin?id=468)
