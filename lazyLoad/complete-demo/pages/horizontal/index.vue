@@ -86,8 +86,7 @@ export default {
 #scroll .img-lazyLoad .load-error-img {
     width: 100px;
 }
-</style>
-<style>
+
 .item {
     background: #fff;
     width: fit-content;
