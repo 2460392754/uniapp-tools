@@ -18,6 +18,7 @@ lazyLoad.setConfig({
         name: 'error-1'
     },
     preLoadNum: 0, // 预加载图片,单位 px
-    intervalTime: 500, // 图片加载间隔(停顿)时间，单位 ms
-    minLoadAnimeTime: 500, // 最少过度动画时间，单位 ms
+    intervalTime: 0, // 图片加载间隔(停顿)时间，单位 ms
+    minLoadAnimeTime: 0, // 最少过度动画时间，单位 ms
+    throttleTime: 300 // 节流时间, 单位 ms
 })

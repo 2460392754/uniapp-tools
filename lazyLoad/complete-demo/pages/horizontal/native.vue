@@ -1,11 +1,14 @@
 <template>
-    <view class='page'
-          id="scroll">
-        <view v-for="n of 6"
-              :key="n"
-              class='item'>
-            <v-lazyload :src="'/static/dog/'+n+'.jpg'"
-                        mode="widthFix"></v-lazyload>
+    <view class='native-y bg'>
+        <view class='page'
+              id="scroll">
+
+            <view v-for="n of 6"
+                  :key="n"
+                  class='item'>
+                <v-lazyload :src="'/static/dog/'+n+'.jpg'"
+                            mode="widthFix"></v-lazyload>
+            </view>
         </view>
     </view>
 </template>
@@ -35,9 +38,12 @@ export default {
 </script>
 
 <style>
+.native-y.bg {
+    background: #f8f8f9;
+}
+
 #scroll {
     height: 100vh; /* 需要给scroll-view设置高度 */
-    background: #f8f8f9;
 }
 
 /* #ifdef H5*/

@@ -1,5 +1,5 @@
 <!--
- * @Description: 图片懒加载、预加载 v1.2
+ * @Description: 图片懒加载、预加载 v1.2.2
  * @Author: pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-06-12 18:47:15
@@ -10,7 +10,7 @@
  -->
 
 <template>
-    <view :class="['img-lazyLoad',uuid]">
+    <view class="img-lazyLoad">
         <!-- img -->
         <view :style="{opacity:isShowImg ? 1 :0}">
             <transition name="show">
@@ -21,7 +21,6 @@
                        @error="imgLoadError"
                        class='load-img'></image>
             </transition>
-
         </view>
 
         <!-- loading-img or loading-component -->
@@ -41,7 +40,7 @@
             </view>
         </transition>
 
-        <!-- error-img -->
+        <!-- error-img or error-component  -->
         <transition name="show">
             <view class='load-error-container'>
                 <image v-if="path.error"

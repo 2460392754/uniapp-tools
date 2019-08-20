@@ -1,5 +1,5 @@
 /*
- * @Description: 图片懒加载、预加载 v1.2.1
+ * @Description: 图片懒加载、预加载 v1.2.2
  * @Author: pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-06-12 18:47:15
@@ -41,9 +41,13 @@ class MyLazyLoad {
         }
     }
 
-    // 监听滚动条2
+    // 监听滚动条 + 节流
     scroll () {
-        _.loadImg();
+        if (!_.throttleLoadImgFn) {
+            _.throttleLoadImgFn = _.throttle(_.loadImg);
+        }
+
+        _.throttleLoadImgFn();
     }
 
     // 添加 图片对象
@@ -72,7 +76,10 @@ var _ = {
         intervalTime: 0,
 
         // 最少过度动画时间
-        minLoadAnimeTime: 0
+        minLoadAnimeTime: 0,
+
+        // 节流时间
+        throttleTime: 0
     },
 
     // 当前scroll的width或者height
@@ -84,11 +91,29 @@ var _ = {
     // 是否横屏加载
     isHorizontal: false,
 
+    throttleLoadImgFn: null,
+
     // 需要加载的图片
     loadImgArr: [],
 
+    // 设置 是否是横屏
     setIsHorizontal (bool) {
         _.isHorizontal = bool;
+    },
+
+    // 节流
+    throttle (callback) {
+        let canRun = true;
+
+        return function (...args) {
+            if (!canRun) return
+
+            canRun = false;
+            setTimeout(() => {
+                callback.apply(this, args)
+                canRun = true;
+            }, _.config.throttleTime)
+        }
     },
 
     // 获取 scroll-view 标签的数据
