@@ -19,6 +19,7 @@ import VLazyload from "@/components/lazyLoad/index.vue";
 
 export default {
     onPageScroll () {
+        // 监听scroll事件
         lazyLoadPlugin.scroll();
     },
 

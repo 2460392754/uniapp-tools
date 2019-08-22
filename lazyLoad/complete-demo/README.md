@@ -1,6 +1,6 @@
 # pocky-lazyLoad
 
-<img src="https://img.shields.io/badge/version-1.2.2-blue.svg?cacheSeconds=2592000" /><br />
+<img src="https://img.shields.io/badge/version-1.2.3-blue.svg?cacheSeconds=2592000" /><br />
 
 ## 介绍
 
@@ -13,6 +13,7 @@
 - 支持预加载
 - 支持设置加载间隔时间和最少过度动画时间
 - 支持 scroll 节流
+- 支持选项卡切换
 
 ## 文档、demo、兼容性测试
 
@@ -20,5 +21,7 @@
 
 ## 最后
 
+<font color="#f39797">
 能不能给个五星好评支持一下 👍👍👍<br />
 能不能给 github 点个**star**👍👍👍
+</font>

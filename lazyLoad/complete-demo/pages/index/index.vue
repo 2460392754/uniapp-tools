@@ -8,6 +8,10 @@
             <button type="primary">y轴滑动 - 原生</button>
         </navigator>
 
+        <navigator url="/pages/horizontal/nav">
+            <button type="primary">y轴滑动 - 选项卡</button>
+        </navigator>
+
         <navigator url="/pages/vertical/index">
             <button type="primary">x轴滑动</button>
         </navigator>
