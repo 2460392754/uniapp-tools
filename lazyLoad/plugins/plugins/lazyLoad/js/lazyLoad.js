@@ -1,5 +1,5 @@
 /*
- * @Description: 图片懒加载、预加载 v1.2.3
+ * @Description: 图片懒加载、预加载 v1.2.4
  * @Author: pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-06-12 18:47:15
@@ -10,14 +10,20 @@
  */
 
 class MyLazyLoad {
-    // 初始化，获取并设置 scroll 标签的 height或width
-    async init (scrollId, isHorizontal = false) {
+    /**
+     * 初始化，获取并设置 scroll 标签的 height或width
+     * @param {String} scrollId scroll标签样式id
+     * @param {Boolean} isHorizontal 是否是横排（x轴）滑动
+     * @param {Object} obj
+     * @param {Object} obj.ctx 获取嵌套组件的上下文
+     */
+    async init (scrollId, isHorizontal = false, { ctx } = {}) {
         if (scrollId.indexOf('#') !== 0) {
             _.error("请填写scroll的样式id")
         }
 
         _.setScrollId(scrollId);
-        let { width, height } = await _.getScrollArgs(scrollId);
+        let { width, height } = await _.getScrollArgs(scrollId, ctx);
 
         if (isHorizontal) {
             _.scroll.w = width;
@@ -152,8 +158,8 @@ var _ = {
     },
 
     // 获取 scroll-view 标签的数据
-    getScrollArgs (id) {
-        return _.getNodeList(id).then(res => {
+    getScrollArgs (id, ctx) {
+        return _.getNodeList(id, ctx).then(res => {
             if (res.length === 0) {
                 _.error("scroll样式id错误或未能获取当前属性");
             }

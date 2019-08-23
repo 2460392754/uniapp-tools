@@ -1,6 +1,6 @@
 # pocky-lazyLoad
 
-<img src="https://img.shields.io/badge/version-1.2.3-blue.svg?cacheSeconds=2592000" /><br />
+<img src="https://img.shields.io/badge/version-1.2.4-blue.svg?cacheSeconds=2592000" /><br />
 
 ## 介绍
 
@@ -10,6 +10,7 @@
 - 支持自定义动画或图片+css
 - 支持添加配置文件
 - 支持 scroll 组件或原生事件
+- 支持图片竖排或横排加载
 - 支持预加载
 - 支持设置加载间隔时间和最少过度动画时间
 - 支持 scroll 节流
@@ -29,7 +30,8 @@
 
 ## 最后
 
-<font color="#f39797">
-能不能给个五星好评支持一下 👍👍👍<br />
-能不能给 github 点个**star**👍👍👍
+<table><tr><td bgcolor="#FFE8E6" >
+<font color="#FF4D4F" size="5">
+开发不易，能给插件一个好评吗，拜托了！ 👍👍👍
 </font>
+</td></tr></table>

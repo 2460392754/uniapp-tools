@@ -46,8 +46,13 @@ export default {
     },
 
     mounted () {
-        // 初始化配置, scroll-view标签id, 第二个参数默认为false，横向懒加载，需要为 true
-        lazyLoadPlugin.init('#scroll', true)
+        /**
+        * 初始化配置, scroll-view标签id
+        * 第二个参数默认为false，横向懒加载，需要为 true
+        * 当scroll被封装成自定义组件是，需要填写此组件的上下文
+        */
+        lazyLoadPlugin.init('#scroll', false)
+        // lazyLoadPlugin.init('#scroll', false, { ctx: this })
     },
 
     destroyed () {

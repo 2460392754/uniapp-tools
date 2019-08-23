@@ -1,5 +1,5 @@
 <!--
- * @Description: 图片懒加载、预加载 v1.2.3
+ * @Description: 图片懒加载、预加载 v1.2.4
  * @Author: pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-06-12 18:47:15
