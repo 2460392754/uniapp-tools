@@ -1,6 +1,6 @@
 # pocky-music
 
-<img src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" /><br />
+<img src="https://img.shields.io/badge/version-1.0.1-blue.svg?cacheSeconds=2592000" /><br />
 
 ## 介绍
 
