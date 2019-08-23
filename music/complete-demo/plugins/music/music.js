@@ -1,8 +1,8 @@
 /*
- * @Description: uniapp music v1.0.0
+ * @Description: uniapp music v1.0.1
  * @Author pocky
  * @Email 2460392754@qq.com
- * @Date: 2019-05-31 19:18:48
+ * @Date: 2019-08-13 ‏‎14:54:53
  * @LastEditTime: 2019-08-07 16:43:36
  * @instruction https://www.yuque.com/pocky/aaeyux/gflqlz
  * @github https://github.com/2460392754/uniapp-tools/tree/master/music

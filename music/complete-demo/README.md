@@ -1,6 +1,6 @@
 # pocky-music
 
-<img src="https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000" /><br />
+<img src="https://img.shields.io/badge/version-1.0.1-blue.svg?cacheSeconds=2592000" /><br />
 
 ## 介绍
 
@@ -15,5 +15,8 @@
 
 ## 最后
 
-能不能给个五星好评支持一下 👍👍👍<br />
-能不能给 **github** 点个**star**👍👍👍
+<table><tr><td bgcolor="#FFE8E6" >
+<font color="#FF4D4F" size="5">
+开发不易，能给插件一个好评吗，拜托了！ 👍👍👍
+</font>
+</td></tr></table>
