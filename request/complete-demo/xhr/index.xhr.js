@@ -25,7 +25,10 @@ export default {
         const r = instance.get({
             url: "/5cda87e31d38be0d2dd91a44/example/get",
             data: { text: 'method type is get' },
-            contentType: 'form',
+            contentType: 'json',
+            header: {
+                sid: 'xxx'
+            },
             success: res => {
                 console.log('👍 getMockDataGet success: ', res)
 
@@ -89,8 +92,8 @@ export default {
     getMockDataMethodGetPromise (canRunState = true) {
         const instance = new request();
         const r = instance.get({
-            // url: "/5cda87e31d38be0d2dd91a44/example/get",
-            url: "/5cda87e31d38be0d2dd91a44/example/get_400",
+            url: "/5cda87e31d38be0d2dd91a44/example/get",
+            // url: "/5cda87e31d38be0d2dd91a44/example/get_400",
             data: { text: 'method type is get' },
             contentType: 'form',
         });

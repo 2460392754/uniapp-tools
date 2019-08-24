@@ -7,6 +7,7 @@ import request from '../../xhr/index.xhr.js'
 
 export default {
     methods: {
+        // get请求 ,callback
         getMockDataMethodGet () {
             request.getMockDataMethodGet({
                 success: res => {
@@ -21,14 +22,17 @@ export default {
             });
         },
 
+        // post请求 ,callback
         getMockDataMethodPost () {
             request.getMockDataMethodPost()
         },
 
+        // get请求，状态码 400 ,callback
         getMockErrDataMethodGet () {
             request.getMockErrDataMethodGet();
         },
 
+        // get请求，Promise
         getMockDataMethodGetPromise () {
             request.getMockDataMethodGetPromise()
                 .then(res => {
@@ -44,10 +48,10 @@ export default {
     },
 
     created () {
-        // this.getMockDataMethodGet();
+        this.getMockDataMethodGet();
         // this.getMockDataMethodPost();
         // this.getMockErrDataMethodGet();
         // this.getMockDataMethodGetPromise();
-    }
+    },
 }
 </script>

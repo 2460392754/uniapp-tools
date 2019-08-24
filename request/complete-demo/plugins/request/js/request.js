@@ -1,5 +1,5 @@
 /*
- * @Description: uniapp request请求库 v1.3
+ * @Description: uniapp request请求库 v1.3.1
  * @Author pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-05-31 19:18:48
@@ -10,71 +10,153 @@
  */
 
 class MyRequest {
-    addInterceptors;
-
-    constructor() {
-        this.addInterceptors = {
-            request: fn => {
-                _.interceptors.request = fn;
-            },
-            response: fn => {
-                _.interceptors.response = fn;
-            }
+    // 添加局部拦截器
+    addInterceptors = {
+        request: fn => {
+            _.interceptors.request = fn;
+        },
+        response: fn => {
+            _.interceptors.response = fn;
         }
-    }
+    };
 
-    // 添加全局拦截器
+    /**
+     * 添加全局拦截器
+     * @param {Object} obj [{}] - 全局拦截器
+     * @param {function} obj.request - 全局请求拦截器
+     * @param {function} obj.response - 全局响应拦截器
+     */
     addGlobalInterce ({ request, response } = {}) {
         _.interceptors.global.request = request
         _.interceptors.global.response = response
     }
 
-    // 获取全局配置
+    /**
+     * 获取 全局配置
+     */
     getConfig () {
         return _.config;
     }
 
-    // 设置全局配置
+    /**
+     * 设置 全局配置
+     * @param {Object} config - 配置数据
+     */
     setConfig (config = {}) {
-        let defaultConfig = {
+        const defaultConfig = {
             url: '',
             dataType: 'json',
             responseType: 'text'
         }
 
-        _.config = {
-            ...defaultConfig,
-            ...config
-        }
+        _.config = _.merge.globalConfig(defaultConfig, config);
     }
 
-    // get请求
+    /**
+     * get 请求
+     * @param {Object} config - 局部配置数据
+     * @return {Object|undefined} 
+     */
     get (config) {
-        let newConfig = _.mergeConfig(config, 'get');
+        const newConfig = _.merge.config(config, 'get');
 
         return _.request(newConfig);
     }
 
-    // post请求
+    /**
+     * post 请求
+     * @param {Object} config - 局部配置数据
+     * @return {Object|undefined} 
+     */
     post (config) {
-        let newConfig = _.mergeConfig(config, 'post');
+        const newConfig = _.merge.config(config, 'post');
 
         return _.request(newConfig);
     }
 
-    // 停止发送请求
+    /**
+     * put 请求
+     * @param {Object} config - 局部配置数据
+     * @return {Object|undefined} 
+     */
+    put (config) {
+        const newConfig = _.merge.config(config, 'put');
+
+        return _.request(newConfig);
+    }
+
+    /**
+     * delete 请求
+     * @param {Object} config - 局部配置数据
+     * @return {Object|undefined} 
+     */
+    delete (config) {
+        const newConfig = _.merge.config(config, 'delete');
+
+        return _.request(newConfig);
+    }
+
+    /**
+     * connect 请求
+     * @param {Object} config - 局部配置数据
+     * @return {Object|undefined} 
+     */
+    connect (config) {
+        const newConfig = _.merge.config(config, 'connect');
+
+        return _.request(newConfig);
+    }
+
+    /**
+     * head 请求
+     * @param {Object} config - 局部配置数据
+     * @return {Object|undefined} 
+     */
+    head (config) {
+        const newConfig = _.merge.config(config, 'head');
+
+        return _.request(newConfig);
+    }
+
+    /**
+     * trace 请求
+     * @param {Object} config - 局部配置数据
+     * @return {Object|undefined} 
+     */
+    trace (config) {
+        const newConfig = _.merge.config(config, 'trace');
+
+        return _.request(newConfig);
+    }
+
+    /**
+     * options 请求
+     * @param {Object} config - 局部配置数据
+     * @return {Object|undefined} 
+     */
+    options (config) {
+        const newConfig = _.merge.config(config, 'options');
+
+        return _.request(newConfig);
+    }
+
+    /**
+     * 停止发送请求
+     * @param {Object} obj - request实例对象
+     */
     stop (obj) {
         try {
             if (obj.example.abort && typeof obj.example.abort === 'function') {
                 obj.example.abort();
             }
         } catch (err) {
-            _._error('参数错误, 无法停止发送请求')
+            _._error(`参数错误, 无法停止发送请求{errmsg: ${JOSN.stringify(err)}}`)
         }
     }
 }
 
-var _ = {
+const _ = {
+    // 全局配置
     config: {
         url: '',
         dataType: '',
@@ -84,231 +166,265 @@ var _ = {
         contentType: 'form',
     },
 
+    // 拦截器
     interceptors: {
         request: null,
         response: null,
         global: {
             request: null,
             response: null,
+        },
+
+        /**
+         * 请求拦截器(全局、局部)
+         * @param {Object} config 
+         * @param {number} count - 运行次数，用于递归的统计
+         */
+        req (config, count) {
+            const type = (count === 2 ? '.global' : '') + '.request';
+            const fnPath = "interceptors" + type;
+            const fn = _.getObjPathVal(fnPath);
+
+            if (typeof fn === 'function') {
+                let ret = fn(config);
+
+                if (ret === false || typeof ret === 'undefined') {
+                    return false;
+                }
+
+                return count === 2 ? ret : _.interceptors.req(ret, 2);
+            }
+
+            if (count === 1) return config;
+            return _.interceptors.req(config, 2);
+        },
+
+        /**
+         * 响应拦截器(全局、局部)
+         * @param {Object} res 
+         * @param {number} count - 运行次数，用于递归的统计
+         */
+        rep (res, count) {
+            const type = (count === 2 ? '.global' : '') + '.response';
+            const fnPath = "interceptors" + type;
+            const fn = _.getObjPathVal(fnPath);
+
+            if (typeof fn === 'function') {
+                let ret = fn(res);
+
+                // 返回promise中reject的值
+                if (Object.prototype.toString.call(ret) === '[object Promise]') {
+                    return ret;
+                }
+
+                if (ret === false || typeof ret === 'undefined') {
+                    return false;
+                }
+
+                return count === 2 ? ret : _.interceptors.rep(ret, 2);
+            }
+
+            if (count === 1) return res;
+            return _.interceptors.rep(res, 2);
         }
     },
 
-    // 合并url，返回完整的资源定位符
-    mergeUrl (url) {
-        const configUrl = _.config.url;
-        const beforeUrlHasSlash = configUrl.lastIndexOf('/') + 1 === configUrl.length;
-        const afterUrlHasSlash = url.indexOf('/') === 0;
+    // 合并
+    merge: {
+        /**
+         * 合并 全局配置
+         * @param {Object} defaultC - 默认配置
+         * @param {Object} newC - 新配置
+         */
+        globalConfig (defaultC, newC) {
+            return {
+                ...defaultC,
+                ...newC
+            }
+        },
 
-        if (url.length === 0 || (configUrl.length !== 0 && !_.isCompleteUrl(configUrl))) {
-            _.error('url参数不完整或者错误');
-        }
+        /**
+         * 合并配置（全局配置+实例中的配置,实例中的优先级更高）
+         * @param {Object} config 
+         * @param {string} method 
+         */
+        config (config, method) {
+            const url = _.merge.url(_.config.url, config.url);
+            const contentType = _.merge.contentType(config.contentType || _.config.contentType);
+            const header = {
+                contentType,
+                ...config.header,
+                ..._.config.header
+            }
+            const newConfig = {
+                ...config,
+                ..._.config,
+                url,
+                method,
+                header
+            };
 
-        if (_.isCompleteUrl(url)) {
-            return url;
-        }
+            delete newConfig.contentType
+            return newConfig;
+        },
 
-        if (beforeUrlHasSlash && afterUrlHasSlash) {
-            return configUrl + url.substr(1);
-        }
+        /**
+         * 合并url，返回完整的资源定位符
+         * @param {string} beforeUrl - 全局配置中设置的基地址
+         * @param {string} afterUrl - request实例中设置的url
+         */
+        url (beforeUrl, afterUrl) {
+            const bLen = beforeUrl.length;
+            const aLen = afterUrl.length;
+            const beforeHasSlash = beforeUrl.lastIndexOf('/') + 1 === bLen;
+            const afterHasSlash = afterUrl.indexOf('/') === 0;
 
-        if (beforeUrlHasSlash || afterUrlHasSlash) {
-            return configUrl + url;
-        }
+            if (aLen === 0 || (bLen !== 0 && !_.isCompleteUrl(beforeUrl))) {
+                _.error('url参数不完整或者错误');
+            }
 
-        if (!beforeUrlHasSlash && !afterUrlHasSlash) {
-            return configUrl + '/' + url;
+            if (_.isCompleteUrl(afterUrl)) {
+                return beforeUrl;
+            }
+
+            if (beforeHasSlash && afterHasSlash) {
+                return beforeUrl + afterUrl.substr(1);
+            }
+
+            if (beforeHasSlash || afterHasSlash) {
+                return beforeUrl + afterUrl;
+            }
+
+            if (!beforeHasSlash && !afterHasSlash) {
+                return beforeUrl + '/' + afterUrl;
+            }
+        },
+
+        /**
+         * 合并header中content-type参数, 默认添加utf-8
+         * @param {string} type ["form"] content-type类型
+         */
+        contentType (type = 'form') {
+            let tmpStr = '';
+
+            switch (type) {
+                case 'form':
+                    tmpStr = 'application/x-www-form-urlencoded'; break;
+                case 'json':
+                    tmpStr = 'application/json'; break;
+                case 'file':
+                    tmpStr = 'multipart/form-data'; break;
+                default:
+                    _.error("contentType参数错误");
+            }
+
+            return tmpStr + ";charset=UTF-8";
+        },
+    },
+
+    xhr: {
+        // 数据回传 成功
+        success (res, config, canRetRep, resolve, reject) {
+            const newRes = _.interceptors.rep(res, 1);
+            const bool = _.xhr.commonIntercept(newRes, config, canRetRep, reject);
+
+            if (bool === false) return false;
+            config.success ? config.success(newRes) : resolve(newRes);
+        },
+
+        // 数据回传 失败
+        fail (err, config, canRetRep, reject) {
+            const newErr = _.interceptors.rep(err, 1);
+            const bool = _.xhr.commonIntercept(newErr, config, canRetRep, reject);
+
+            if (bool === false) return false;
+            config.fail ? config.fail(newErr) : reject(newErr)
+        },
+
+        // 数据回传 完成
+        complete (res, config, canRetRep) {
+            if (!config.complete || !canRetRep.state) return false;
+
+            config.complete(res);
+        },
+
+        // 公共拦截部分
+        commonIntercept (obj, { fail }, type, reject) {
+            // 数据被拦截, 没有返回值
+            if (obj === false) {
+                type.state = false;
+                return false;
+            }
+
+            // 数据被拦截, 主动抛出错误
+            if (Object.prototype.toString.call(obj) === '[object Promise]') {
+                obj.catch(fail || reject);
+                return false;
+            }
         }
     },
 
-    // 是否是完整的 url 
+    /**
+     * 是否是完整的 url 
+     * @param {string} url - 统一资源定位符
+     */
     isCompleteUrl (url) {
         return /(http|https):\/\/([\w.]+\/?)\S*/.test(url);
     },
 
-    // 合并header中content-type参数, 默认添加utf-8
-    mergeContentType (type = 'form') {
-        let tmpStr = '';
-
-        switch (type) {
-            case 'form' || 'undefined':
-                tmpStr = 'application/x-www-form-urlencoded';
-                break;
-
-            case 'json':
-                tmpStr = 'application/json';
-                break;
-
-            case 'file':
-                tmpStr = 'multipart/form-data';
-                break;
-
-            default:
-                _.error("contentType参数错误");
-        }
-
-        return tmpStr + ";charset=UTF-8";
-    },
-
-    // 合并配置（全局配置+实例中的配置,实例中的优先级更高）
-    mergeConfig (config, method) {
-        const url = _.mergeUrl(config.url);
-        const contentType = _.mergeContentType(config.contentType || _.config.contentType);
-        const header = {
-            'content-type': contentType,
-            ...config.header,
-            ..._.config.header,
-        };
-
-        const newConfig = {
-            ...config,
-            ..._.config,
-            url,
-            method,
-            header
-        }
-
-        delete newConfig.contentType
-
-        return newConfig;
-    },
-
-    // 请求拦截器
-    interceptorsReq (config, n = 0) {
-        let type = '.request';
-        let fnName = `interceptors${n === 1 ? ".global" + type : type}`;
-        let fn = _.getinterceptorsFn(fnName)
-
-        if (typeof fn === 'function') {
-            let ret = fn(config);
-
-            if (ret === false || typeof ret === 'undefined') {
-                return false;
-            }
-
-            return n === 0 ? ret : _.interceptorsReq(ret)
-        }
-
-        if (n === 0) return config;
-        return _.interceptorsReq(config);
-    },
-
-    // 响应拦截器
-    interceptorsRep (res, n = 0) {
-        let type = `.response`;
-        let fnName = `interceptors${n === 1 ? ".global" + type : type}`;
-        let fn = _.getinterceptorsFn(fnName)
-
-        if (typeof fn === 'function') {
-            let ret = fn(res);
-
-            // 返回promise中reject的值
-            if (Object.prototype.toString.call(ret) === '[object Promise]') {
-                return ret;
-            }
-
-            if (ret === false || typeof ret === 'undefined') {
-                return false;
-            }
-
-            return n === 0 ? ret : _.interceptorsRep(ret);
-        }
-
-        if (n === 0) return res;
-        return _.interceptorsReq(res);
-    },
-
-    // 获取拦截器的函数
-    getinterceptorsFn (fnName) {
-        let splitArr = fnName.split('.');
+    /**
+     * 获取 根据对象的属性路径的值
+     * @param {string} objPath - 对象的属性路径
+     */
+    getObjPathVal (objPath) {
+        const splitList = objPath.split('.');
         let tmpObj = _;
 
-        for (let name of splitArr) {
-            tmpObj = tmpObj[name];
-        }
+        splitList.forEach(key => {
+            tmpObj = tmpObj[key]
+        });
 
         return tmpObj;
     },
 
-    // xhr数据回传成功
-    xhrSuccess (res, config, canRetRep, resolve, reject) {
-        let newRes = _.interceptorsRep(res, 1);
-
-        if (!!!newRes) {
-            canRetRep.state = false;
-            return false;
-        }
-
-        if (Object.prototype.toString.call(newRes) === '[object Promise]') {
-            newRes.catch(config.fail || reject);
-
-            return false;
-        }
-
-        config.success ? config.success(newRes) : resolve(newRes);
-    },
-
-    // xhr数据回传失败
-    xhrFail (err, config, canRetRep, reject) {
-        let newErr = _.interceptorsRep(err, 1);
-
-        if (!!!newErr) {
-            canRetRep.state = false;
-            return false;
-        }
-
-        if (Object.prototype.toString.call(newErr) === '[object Promise]') {
-            newErr.catch(config.fail || reject);
-
-            return false;
-        }
-
-        config.fail ? config.fail(newErr) : reject(newErr)
-    },
-
-    // xhr数据回传成功或失败
-    xhrComplete (res, config, canRetRep) {
-        if (!config.complete || !canRetRep.state) return false;
-
-        config.complete(res);
-    },
-
-    // 公共请求方法, 支持对象中callback或Promise
+    /**
+     * 公共请求方法, 支持对象中callback或Promise
+     * @param {Object} config - 完整的配置数据
+     */
     request (config) {
-        let canRetRep = { state: true };
-        let example;
-        let ret;
+        const canRetRep = { status: true };
+        const newConfig = _.interceptors.req(config, 1);
+        let example, ret;
 
-        config = _.interceptorsReq(config, 1);
-        if (config === false) return;
+        if (newConfig === false) return;
 
         ret = new Promise((resolve, reject) => {
             example = uni.request({
-                ...config,
-
+                ...newConfig,
                 success: res => {
-                    _.xhrSuccess(res, config, canRetRep, resolve, reject);
+                    _.xhr.success(res, newConfig, canRetRep, resolve, reject);
                 },
                 fail: err => {
-                    _.xhrFail(err, config, canRetRep, reject);
+                    _.xhr.fail(err, newConfig, canRetRep, reject);
                 },
                 complete: res => {
-                    _.xhrComplete(res, config, canRetRep);
+                    _.xhr.complete(res, newConfig, canRetRep);
                 }
-            })
-        })
+            });
+        });
 
-        /**
-         * @todo 修改了__proto__(隐式原型)的属性
-         */
+        // @TODO: 修改了__proto__(隐式原型)的属性
         ret.__proto__.example = example;
-        // ret.example = example;
 
         return ret;
     },
 
-    // 抛出错误
-    error (str) {
-        throw ('[request error]: ' + str)
+    /**
+     * 抛出错误
+     * @param {string} msg 错误信息
+     */
+    error (msg) {
+        throw new Error('[request error]: ' + msg)
     }
 }
 

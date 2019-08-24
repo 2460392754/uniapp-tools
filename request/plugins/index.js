@@ -4,9 +4,9 @@ import request from './request';
 request.prototype.setConfig({
     url: 'https://easy-mock.com/mock/',  // 基地址
     // contentType: 'json',
-    // header: {
-    //     uid: 'xxxx'
-    // }
+    header: {
+        uid: 'xxxx'
+    }
 });
 
 // 全局拦截器
