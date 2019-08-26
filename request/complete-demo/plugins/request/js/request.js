@@ -1,5 +1,5 @@
 /*
- * @Description: uniapp request请求库 v1.3.1
+ * @Description: uniapp request请求库 v1.3.2
  * @Author pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-05-31 19:18:48
@@ -181,7 +181,7 @@ const _ = {
          * @param {number} count - 运行次数，用于递归的统计
          */
         req (config, count) {
-            const type = (count === 2 ? '.global' : '') + '.request';
+            const type = (count === 1 ? '.global' : '') + '.request';
             const fnPath = "interceptors" + type;
             const fn = _.getObjPathVal(fnPath);
 
@@ -195,7 +195,7 @@ const _ = {
                 return count === 2 ? ret : _.interceptors.req(ret, 2);
             }
 
-            if (count === 1) return config;
+            if (count === 2) return config;
             return _.interceptors.req(config, 2);
         },
 
@@ -205,7 +205,7 @@ const _ = {
          * @param {number} count - 运行次数，用于递归的统计
          */
         rep (res, count) {
-            const type = (count === 2 ? '.global' : '') + '.response';
+            const type = (count === 1 ? '.global' : '') + '.response';
             const fnPath = "interceptors" + type;
             const fn = _.getObjPathVal(fnPath);
 
@@ -224,7 +224,7 @@ const _ = {
                 return count === 2 ? ret : _.interceptors.rep(ret, 2);
             }
 
-            if (count === 1) return res;
+            if (count === 2) return res;
             return _.interceptors.rep(res, 2);
         }
     },
@@ -343,7 +343,7 @@ const _ = {
 
         // 数据回传 完成
         complete (res, config, canRetRep) {
-            if (!config.complete || !canRetRep.state) return false;
+            if (!config.complete || !canRetRep.status) return false;
 
             config.complete(res);
         },
@@ -352,7 +352,7 @@ const _ = {
         commonIntercept (obj, { fail }, type, reject) {
             // 数据被拦截, 没有返回值
             if (obj === false) {
-                type.state = false;
+                type.status = false;
                 return false;
             }
 
