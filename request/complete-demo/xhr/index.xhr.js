@@ -1,4 +1,5 @@
 import request from '../plugins/request/js/index'
+import testRequest from '../plugins/request/js/test'
 
 export default {
     // get请求 ,callback
@@ -48,6 +49,7 @@ export default {
 
         // 停止发生请求
         !canRunState && instance.stop(r)
+        // instance.stop(r)
     },
 
     // post请求 ,callback
@@ -101,5 +103,5 @@ export default {
         !canRunState && instance.stop(r)
 
         return r;
-    },
+    }
 }

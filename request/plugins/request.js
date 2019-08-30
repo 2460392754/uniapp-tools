@@ -1,5 +1,5 @@
 /*
- * @Description: uniapp request请求库 v1.3.2
+ * @Description: uniapp request请求库 v1.3.3
  * @Author pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-05-31 19:18:48
@@ -413,8 +413,8 @@ const _ = {
             });
         });
 
-        // @TODO: 修改了__proto__(隐式原型)的属性
-        ret.__proto__.example = example;
+        // @TODO: 隐式修改原型
+        Object.__proto__.example = example;
 
         return ret;
     },

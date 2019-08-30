@@ -1,6 +1,6 @@
 # pocky-request
 
-<img src="https://img.shields.io/badge/version-1.3.2-blue.svg?cacheSeconds=2592000" /><br />
+<img src="https://img.shields.io/badge/version-1.3.3.1-blue.svg?cacheSeconds=2592000" /><br />
 
 ## 介绍
 

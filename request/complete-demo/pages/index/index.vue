@@ -3,13 +3,13 @@
 </template>
 
 <script>
-import request from '../../xhr/index.xhr.js'
+import Api from '../../xhr/index.xhr.js'
 
 export default {
     methods: {
         // get请求 ,callback
         getMockDataMethodGet () {
-            request.getMockDataMethodGet({
+            Api.getMockDataMethodGet({
                 success: res => {
                     console.log('👍👍👍👍👍 success callback')
                 },
@@ -24,17 +24,17 @@ export default {
 
         // post请求 ,callback
         getMockDataMethodPost () {
-            request.getMockDataMethodPost()
+            Api.getMockDataMethodPost()
         },
 
         // get请求，状态码 400 ,callback
         getMockErrDataMethodGet () {
-            request.getMockErrDataMethodGet();
+            Api.getMockErrDataMethodGet();
         },
 
         // get请求，Promise
         getMockDataMethodGetPromise () {
-            request.getMockDataMethodGetPromise()
+            Api.getMockDataMethodGetPromise()
                 .then(res => {
                     console.log('👍👍👍👍👍 then', res)
                 })
