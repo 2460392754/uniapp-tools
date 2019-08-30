@@ -1,5 +1,4 @@
 import request from '../plugins/request/js/index'
-import testRequest from '../plugins/request/js/test'
 
 export default {
     // get请求 ,callback

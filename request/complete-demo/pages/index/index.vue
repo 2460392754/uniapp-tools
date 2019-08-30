@@ -48,10 +48,10 @@ export default {
     },
 
     created () {
-        this.getMockDataMethodGet();
+        // this.getMockDataMethodGet();
         // this.getMockDataMethodPost();
         // this.getMockErrDataMethodGet();
-        // this.getMockDataMethodGetPromise();
+        this.getMockDataMethodGetPromise();
     },
 }
 </script>
