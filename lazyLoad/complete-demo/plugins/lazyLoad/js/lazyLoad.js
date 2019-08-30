@@ -1,5 +1,5 @@
 /*
- * @Description: 图片懒加载、预加载 v1.2.4
+ * @Description: 图片懒加载、预加载 v1.2.5
  * @Author: pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-06-12 18:47:15
@@ -64,8 +64,6 @@ class MyLazyLoad {
         if (!_.throttleLoadImgFn) {
             _.throttleLoadImgFn = _.throttle(_.loadImg);
         }
-
-        // console.log(_.loadImgArr)
 
         _.throttleLoadImgFn();
     }
@@ -203,7 +201,7 @@ var _ = {
 
     // 图片是否加载完成
     loadImgIsComplete (item) {
-        return _.checkNeedLoadImgNode(item).then(item.fn).catch(() => false)
+        return _.checkNeedLoadImgNode(item).then(item.callback).catch(() => false)
     },
 
     // 删除 图片对象
@@ -215,11 +213,11 @@ var _ = {
     },
 
     // 获取 nodeList 节点
-    getNodeList (selector, that = null) {
+    getNodeList (selector, ctx = null) {
         return new Promise(resolve => {
             let view = uni.createSelectorQuery();
 
-            that && (view = view.in(that));
+            ctx && (view = view.in(ctx));
             view.selectAll(selector)
                 .fields({
                     rect: true,
@@ -234,7 +232,7 @@ var _ = {
     // 检查需要加载图片的节点
     checkNeedLoadImgNode (item) {
         return new Promise((resolve, reject) => {
-            _.getNodeList('#' + item.uuid, item.that).then(res => {
+            _.getNodeList('#' + item.uuid, item.ctx).then(res => {
                 if (res.length === 0) return;
 
                 let [{ top, left }] = res;

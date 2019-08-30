@@ -12,56 +12,77 @@
 <template>
     <view class="img-lazyLoad">
         <!-- img -->
-        <view :style="{opacity:isShowImg ? 1 :0}">
-            <transition name="show">
-                <image v-if="imgLoadStart"
-                       :src="src"
-                       :mode="mode"
-                       @load="imgLoadSuccess"
-                       @error="imgLoadError"
-                       class='load-img'></image>
-            </transition>
-        </view>
+        <anime-state-switch ref="img"
+                            :isOpacity="isShowImg"
+                            class='load-img-container'>
+            <image v-if="imgLoadStart"
+                   class='load-img'
+                   :src="src"
+                   :mode="mode"
+                   @load="imgLoadSuccess"
+                   @error="imgLoadError"></image>
+        </anime-state-switch>
 
         <!-- loading-img or loading-component -->
-        <transition name="show">
-            <view v-show="!isShowImg"
-                  :id="uuid"
-                  class='load-loading-container'>
-                <image v-if="path.loading"
-                       :src="path.loading"
-                       class="load-loading-img slow"
-                       mode="widthFix"></image>
+        <anime-state-switch ref="loading"
+                            :isIf="hasLoadingRes"
+                            :isShow="!isShowImg"
+                            :idName="uuid"
+                            class='load-loading-container'>
+            <image v-if="path.loading"
+                   :src="path.loading"
+                   class="load-loading-img"
+                   mode="widthFix"></image>
 
-                <view v-show="imgLoadStart"
-                      class='load-loading-component'>
-                    <loading-export :type="componentName.loading"></loading-export>
-                </view>
+            <view v-show="imgLoadStart"
+                  class='load-loading-component'>
+                <loading-export :type="componentName.loading"></loading-export>
             </view>
-        </transition>
+        </anime-state-switch>
 
         <!-- error-img or error-component  -->
-        <transition name="show">
-            <view class='load-error-container'>
-                <image v-if="path.error"
-                       :src="path.error"
-                       class="load-error-img"
-                       mode="widthFix"></image>
+        <anime-state-switch ref="error"
+                            :isIf="hasErrorRes"
+                            class='load-error-container'>
+            <image v-if="path.error"
+                   :src="path.error"
+                   class="load-error-img"
+                   mode="widthFix"></image>
 
-                <view class='load-error-component'>
-                    <error-export :type="componentName.error"></error-export>
-                </view>
+            <view class='load-error-component'>
+                <error-export :type="componentName.error"></error-export>
             </view>
-        </transition>
+        </anime-state-switch>
     </view>
 </template>
 
 <script>
 import lazyLoadPlugins from "../../plugins/lazyLoad/js/lazyLoad";
-import loadingExport from './animation/loadingExport';
-import errorExport from './animation/errorExport';
+import LoadingExport from './animation/loadingExport';
+import ErrorExport from './animation/errorExport';
+import AnimeStateSwitch from './AnimeStateSwitch';
 
 export default {
+    props: {
+        // 图片路径
+        src: {
+            type: String,
+            default: ""
+        },
+
+        // 图片裁剪、缩放的模式
+        mode: {
+            type: String,
+            default: ""
+        },
+
+        // 当前组件所在的scroll标签内的id
+        scrollid: {
+            type: [String, null],
+            default: null
+        }
+    },
+
     data () {
         return {
             // 图片的id
@@ -95,25 +116,17 @@ export default {
             }
         }
     },
-    props: {
-        // 图片路径
-        src: {
-            type: String,
-            default: ""
+
+    computed: {
+        hasLoadingRes () {
+            return Boolean(this.path.loading || this.componentName.loading)
         },
 
-        // 图片裁剪、缩放的模式
-        mode: {
-            type: String,
-            default: ""
-        },
-
-        // 当前组件所在的scroll标签内的id
-        scrollid: {
-            type: [String, null],
-            default: null
+        hasErrorRes () {
+            return Boolean(this.path.error || this.componentName.error)
         }
     },
+
     methods: {
         // 初始化
         $_init () {
@@ -144,9 +157,9 @@ export default {
         // 注册图片对象 ,监听图片加载状态
         $_registerImg () {
             lazyLoadPlugins.addImg({
-                that: this,
+                ctx: this.$refs.loading,
                 uuid: this.uuid,
-                fn: () => {
+                callback: () => {
                     return new Promise((resolve, reject) => {
                         if (this.imgLoadStart === true) reject();
 
@@ -162,13 +175,15 @@ export default {
 
         // 图片加载完成
         imgLoadSuccess () {
+            // console.log('success')
             this.imgLoadCommon();
         },
 
         // 图片加载出错
         imgLoadError () {
+            // console.log('error')
             this.imgLoadCommon();
-            this.$_setImgType("error");
+            this.$_setImgType("error")
         },
 
         imgLoadCommon () {
@@ -206,8 +221,9 @@ export default {
     },
 
     components: {
-        loadingExport,
-        errorExport
+        LoadingExport,
+        ErrorExport,
+        AnimeStateSwitch
     },
 
     created () {
@@ -216,22 +232,10 @@ export default {
 }
 </script>
 
-<style scoped>
-.show-enter-active {
-    transition: opacity 0.5s;
-}
-.show-leave-active {
-    transition: opacity 0.5s;
-}
-.show-enter,
-.show-leave-active {
-    opacity: 0;
-}
-
+<style>
 .img-lazyLoad {
     position: relative;
     width: fit-content;
-    /* overflow: hidden; */
 }
 
 .img-lazyLoad .load-loading-container,
@@ -255,17 +259,7 @@ export default {
     right: 0;
     bottom: 0;
     width: 60%;
-    /* margin: auto; */
     margin: 0 auto;
-    /* z-index: -1; */
-}
-
-.img-lazyLoad .load-loading-img.fast {
-    animation: anime-fast 1.2s linear infinite;
-}
-
-.img-lazyLoad .load-loading-img.slow {
-    animation: anime-fast 2s linear infinite;
 }
 
 .img-lazyLoad .load-loading-component,
@@ -274,14 +268,5 @@ export default {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-}
-
-@keyframes anime-fast {
-    from {
-        transform: rotate(0);
-    }
-    to {
-        transform: rotate(360deg);
-    }
 }
 </style>
