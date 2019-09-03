@@ -1,5 +1,5 @@
 /*
- * @Description: uniapp request请求库 v1.3.5
+ * @Description: uniapp request请求库 v1.3.6
  * @Author pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-05-31 19:18:48
@@ -286,7 +286,7 @@ const _ = {
             }
 
             if (_.isCompleteUrl(afterUrl)) {
-                return beforeUrl;
+                return afterUrl;
             }
 
             if (beforeHasSlash && afterHasSlash) {
