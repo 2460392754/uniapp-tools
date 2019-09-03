@@ -1,6 +1,6 @@
 import request from './request';
 
-// 设置全局配置
+// 设置全局配置, 只能配置静态数据
 request.prototype.setConfig({
     url: 'https://easy-mock.com/mock/',  // 基地址
     // contentType: 'json',
@@ -27,6 +27,8 @@ request.prototype.addGlobalInterce({
     response (res) {
         let firstCodeNum = String(res.statusCode).substr(0, 1);
         console.log('📫 is global response interceptors', res)
+
+        // return false;
 
         // 2xx
         if (firstCodeNum === '2') {

@@ -1,5 +1,5 @@
 /*
- * @Description: uniapp request请求库 v1.3.4
+ * @Description: uniapp request请求库 v1.3.5
  * @Author pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-05-31 19:18:48
@@ -418,7 +418,7 @@ const _ = {
         const newConfig = _.interceptors.req(config, 1);
         let example, ret;
 
-        if (newConfig === false) return;
+        if (newConfig === false) return _.myPromise();
 
         ret = new Promise((resolve, reject) => {
             example = uni.request({
@@ -439,6 +439,16 @@ const _ = {
         ret.__proto__.example = example;
 
         return ret;
+    },
+
+    myPromise () {
+        let that = {};
+
+        that.then = () => that;
+        that.catch = () => that;
+        that.finally = () => that;
+
+        return that;
     },
 
     /**
