@@ -1,5 +1,5 @@
 /*
- * @Description: uniapp request请求库 v1.3.3.2
+ * @Description: uniapp request请求库 v1.3.4
  * @Author pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-05-31 19:18:48
@@ -249,10 +249,12 @@ const _ = {
          * @param {string} method 
          */
         config (config, method) {
-            const url = _.merge.url(_.config.url, config.url);
+            let url = _.merge.url(_.config.url, config.url);
+            url += _.merge.params(config.params);
+
             const contentType = _.merge.contentType(config.contentType || _.config.contentType);
             const header = {
-                contentType,
+                'Content-type': contentType,
                 ...config.header,
                 ..._.config.header
             }
@@ -320,6 +322,26 @@ const _ = {
 
             return tmpStr + ";charset=UTF-8";
         },
+
+        /**
+         * 合并params，并转字符串
+         * @param {Object} obj params对象
+         * @return {String}
+         */
+        params (obj = {}) {
+            if (obj === {}) return '';
+
+            let tmpStr = '';
+
+            for (const [key, val] of Object.entries(obj)) {
+                tmpStr += `${key}=${val}&`;
+            }
+
+            tmpStr !== '' && (tmpStr = '?' + tmpStr);
+            tmpStr = tmpStr.substring(0, tmpStr.length - 1)
+
+            return tmpStr;
+        }
     },
 
     xhr: {

@@ -1,6 +1,10 @@
 # pocky-request
 
-<img src="https://img.shields.io/badge/version-1.3.3.2-blue.svg?cacheSeconds=2592000" /><br />
+<a href="https://github.com/2460392754/uniapp-tools">
+<img src="https://img.shields.io/badge/version-1.3.4-blue.svg?cacheSeconds=2592000" />
+<img src="https://badgen.net/github/stars/2460392754/uniapp-tools">
+<img src="https://badgen.net/github/forks/2460392754/uniapp-tools">
+</a>
 
 ## 介绍
 
@@ -13,6 +17,7 @@
 - 支持添加配置文件
 - 支持根据接口自定义处理
 - 支持所有 method 方法
+- 支持 params 参数属性
 
 ## 文档、demo、兼容性测试
 

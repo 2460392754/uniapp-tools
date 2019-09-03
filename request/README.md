@@ -1,6 +1,6 @@
 # pocky-request
 
-<img src="https://img.shields.io/badge/version-1.3.1-blue.svg?cacheSeconds=2592000" /><br />
+<img src="https://img.shields.io/badge/version-1.3.4-blue.svg?cacheSeconds=2592000" /><br />
 
 ## 介绍
 
@@ -13,6 +13,7 @@
 - 支持添加配置文件
 - 支持根据接口自定义处理
 - 支持所有 method 方法
+- 支持 params 参数属性
 
 ## 更新日志
 

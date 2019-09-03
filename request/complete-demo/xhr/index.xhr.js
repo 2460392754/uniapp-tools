@@ -102,5 +102,14 @@ export default {
         !canRunState && instance.stop(r)
 
         return r;
+    },
+
+    // put请求，Promise
+    getMockDataMethodPut () {
+        return new request().put({
+            url: "/5cda87e31d38be0d2dd91a44/example/put",
+            params: { aid: '2', uid: '5' },
+            data: { text: 'method type is put' },
+        })
     }
 }

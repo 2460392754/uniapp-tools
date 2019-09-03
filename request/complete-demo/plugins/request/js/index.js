@@ -15,7 +15,7 @@ request.prototype.addGlobalInterce({
     // return false或者不return值, 都不会发送请求
     request (config) {
         console.log('📖 is global request interceptors', config)
-        config.data.text += ', addGlobalInterce request';
+        // config.header.token = 'xxxxx';
 
         return config;
         // return false;
@@ -45,7 +45,7 @@ request.prototype.addGlobalInterce({
         // 4xx or 5xx
         if (firstCodeNum === '4' || firstCodeNum === '5') {
             // do something
-            console.log('is 4xx or 5xx')
+            // console.log('is 4xx or 5xx')
             return Promise.reject('nooooo')
         }
 

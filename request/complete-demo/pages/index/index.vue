@@ -44,6 +44,17 @@ export default {
                 .finally(() => {
                     console.log('😐😐😐😐😐 finally')
                 })
+        },
+
+        // put请求，Promise
+        getMockDataMethodPut () {
+            Api.getMockDataMethodPut()
+                .then(res => {
+                    console.log('👍👍👍👍👍 then', res)
+                })
+                .catch(err => {
+                    console.log('⛔⛔⛔⛔⛔ catch', err)
+                })
         }
     },
 
@@ -51,7 +62,8 @@ export default {
         // this.getMockDataMethodGet();
         // this.getMockDataMethodPost();
         // this.getMockErrDataMethodGet();
-        this.getMockDataMethodGetPromise();
+        // this.getMockDataMethodGetPromise();
+        this.getMockDataMethodPut();
     },
 }
 </script>
