@@ -47,8 +47,8 @@ export default {
         });
 
         // 停止发生请求
-        !canRunState && instance.stop(r)
-        // instance.stop(r)
+        // !canRunState && instance.stop(r)
+        instance.stop(r)
     },
 
     // post请求 ,callback
@@ -57,7 +57,6 @@ export default {
         const r = instance.post({
             url: "/5cda87e31d38be0d2dd91a44/example/post",
             data: { text: 'method type is post' },
-            contentType: 'form',
             success: res => {
                 console.log('👍 getMockDataMethodPost success: ', res)
             },

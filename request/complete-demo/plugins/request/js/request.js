@@ -1,14 +1,13 @@
 /*
- * @Description: uniapp request请求库 v1.3.6
- * @Author pocky
+ * @Description: uniapp request请求库 v1.3.7
+ * @Author: pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-05-31 19:18:48
- * @LastEditTime: 2019-08-07 16:43:36
- * @instruction https://www.yuque.com/pocky/aaeyux/pdik23
- * @github https://github.com/2460392754/uniapp-tools/tree/master/request
- * @dcloud https://ext.dcloud.net.cn/plugin?id=468
+ * @LastEditTime: 2019-09-04 20:52:37
+ * @instruction: https://www.yuque.com/pocky/aaeyux/pdik23
+ * @github: https://github.com/2460392754/uniapp-tools/tree/master/request
+ * @dcloud: https://ext.dcloud.net.cn/plugin?id=468
  */
-
 class MyRequest {
     // 添加局部拦截器
     addInterceptors = {
@@ -146,9 +145,7 @@ class MyRequest {
      */
     stop (obj) {
         try {
-            if (obj.example.abort && typeof obj.example.abort === 'function') {
-                obj.example.abort();
-            }
+            typeof obj.example.abort === 'function' && obj.example.abort();
         } catch (err) {
             _._error(`参数错误, 无法停止发送请求{errmsg: ${JOSN.stringify(err)}}`)
         }
@@ -252,7 +249,7 @@ const _ = {
             let url = _.merge.url(_.config.url, config.url);
             url += _.merge.params(config.params);
 
-            const contentType = _.merge.contentType(config.contentType || _.config.contentType);
+            const contentType = _.merge.contentType(_.config, config);
             const header = {
                 'Content-type': contentType,
                 ...config.header,
@@ -266,7 +263,6 @@ const _ = {
                 header
             };
 
-            delete newConfig.contentType
             return newConfig;
         },
 
@@ -304,23 +300,58 @@ const _ = {
 
         /**
          * 合并header中content-type参数, 默认添加utf-8
-         * @param {string} type ["form"] content-type类型
+         * @param {Object} config 
+         * @param {Object} newConfig 
+         * @return {String}
          */
-        contentType (type = 'form') {
-            let tmpStr = '';
+        contentType (config, newConfig) {
+            const defaultList = {
+                form: 'application/x-www-form-urlencoded;charset=UTF-8',
+                json: 'application/json;charset=UTF-8',
+                file: 'multipart/form-data;charset=UTF-8'
+            }
+            const retObj = { val: false }
 
-            switch (type) {
-                case 'form':
-                    tmpStr = 'application/x-www-form-urlencoded'; break;
-                case 'json':
-                    tmpStr = 'application/json'; break;
-                case 'file':
-                    tmpStr = 'multipart/form-data'; break;
-                default:
-                    _.error("contentType参数错误");
+            f(newConfig, retObj)
+            loop(newConfig, retObj);
+            f(config, retObj)
+            loop(config, retObj);
+
+            function f (c, o) {
+                const defaultKeys = Object.keys(defaultList);
+                const type = c.contentType;
+
+                if (o.val) return;
+
+                if (typeof type !== 'undefined') {
+                    !defaultKeys.includes(type) && _.error("contentType参数错误: " + type);
+                }
+
+                delete c.contentType
+
+                o.val = defaultList[type];
             }
 
-            return tmpStr + ";charset=UTF-8";
+            function loop (c, o) {
+                const hasList = ['content-type', 'content-Type', 'Content-Type', 'contentType', 'ContentType'];
+
+                for (const [key, val] of Object.entries(c.header || {})) {
+                    const pos = hasList.indexOf(key);
+
+                    if (pos === -1) {
+                        continue;
+                    };
+
+                    delete c.header[key];
+
+                    if (!o.val) {
+                        o.val = val;
+                        break;
+                    }
+                }
+            }
+
+            return retObj.val || defaultList.form;
         },
 
         /**

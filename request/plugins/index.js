@@ -5,7 +5,7 @@ request.prototype.setConfig({
     url: 'https://easy-mock.com/mock/',  // 基地址
     // contentType: 'json',
     header: {
-        uid: 'xxxx'
+        // uid: 'xxxx'
     }
 });
 
@@ -21,7 +21,7 @@ request.prototype.addGlobalInterce({
         // return false;
     },
 
-    // 响应拦截器 (例如根据状态码拦截数据)
+    // 响应拦截器 (例如根据状态码拦截数据或者过滤数据)
     // return false或者不return值 则都不会返回值
     // return Promise.reject('xxxxx')，主动抛出错误
     response (res) {
