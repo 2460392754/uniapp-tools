@@ -47,8 +47,8 @@ export default {
         });
 
         // 停止发生请求
-        // !canRunState && instance.stop(r)
-        instance.stop(r)
+        !canRunState && instance.stop(r)
+        // instance.stop(r)
     },
 
     // post请求 ,callback
@@ -109,6 +109,21 @@ export default {
             url: "/5cda87e31d38be0d2dd91a44/example/put",
             params: { aid: '2', uid: '5' },
             data: { text: 'method type is put' },
+        })
+    },
+
+    mockUpload () {
+        return new request().upload({
+            url: "https://www.easy-mock.com/mock/5cda87e31d38be0d2dd91a44/example/upload",
+            name: 'file',
+            filePath: 'data:image/png;base64,xxxxxxxxxx',
+            formData: { text: 'is mock upload file' },
+        });
+    },
+
+    mockDownload () {
+        return new request().download({
+            url: 'https://dummyimage.com/120x60',
         })
     }
 }

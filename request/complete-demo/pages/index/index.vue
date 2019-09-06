@@ -55,15 +55,39 @@ export default {
                 .catch(err => {
                     console.log('⛔⛔⛔⛔⛔ catch', err)
                 })
+        },
+
+        // 上传
+        mockUpload () {
+            Api.mockUpload()
+                .then(res => {
+                    console.log('👍👍👍👍👍 then', res)
+                })
+                .catch(err => {
+                    console.log('⛔⛔⛔⛔⛔ catch', err)
+                })
+        },
+
+        // 下载
+        mockDownload () {
+            Api.mockDownload()
+                .then(res => {
+                    console.log('👍👍👍👍👍 then', res)
+                })
+                .catch(err => {
+                    console.log('⛔⛔⛔⛔⛔ catch', err)
+                })
         }
     },
 
     created () {
-        this.getMockDataMethodGet();
+        // this.getMockDataMethodGet();
         // this.getMockDataMethodPost();
         // this.getMockErrDataMethodGet();
         // this.getMockDataMethodGetPromise();
         // this.getMockDataMethodPut();
+        this.mockUpload();
+        // this.mockDownload();
     },
 }
 </script>

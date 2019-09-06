@@ -1,9 +1,9 @@
 /*
- * @Description: uniapp request请求库 v1.3.7
+ * @Description: uniapp request请求库 v1.3.8
  * @Author: pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-05-31 19:18:48
- * @LastEditTime: 2019-09-04 20:52:37
+ * @LastEditTime: 2019-09-06 08:49:02
  * @instruction: https://www.yuque.com/pocky/aaeyux/pdik23
  * @github: https://github.com/2460392754/uniapp-tools/tree/master/request
  * @dcloud: https://ext.dcloud.net.cn/plugin?id=468
@@ -134,7 +134,7 @@ class MyRequest {
      * @return {Object|undefined} 
      */
     options (config) {
-        const newConfig = _.merge.config(config, 'options');
+        const newConfig = _.merge.config(config, 'post');
 
         return _.request(newConfig);
     }
@@ -149,6 +149,26 @@ class MyRequest {
         } catch (err) {
             _._error(`参数错误, 无法停止发送请求{errmsg: ${JOSN.stringify(err)}}`)
         }
+    }
+
+    /**
+     * 上传 文件
+     * @param {Object} config 
+     */
+    upload (config) {
+        const newConfig = _.merge.config(config, 'post');
+
+        return _.upload(newConfig);
+    }
+
+    /**
+     * 下载 文件
+     * @param {Object} config 
+     */
+    download (config) {
+        const newConfig = _.merge.config(config, 'get');
+
+        return _.download(newConfig);
     }
 }
 
@@ -251,7 +271,7 @@ const _ = {
 
             const contentType = _.merge.contentType(_.config, config);
             const header = {
-                'Content-type': contentType,
+                'content-type': contentType,
                 ...config.header,
                 ..._.config.header
             }
@@ -300,6 +320,7 @@ const _ = {
 
         /**
          * 合并header中content-type参数, 默认添加utf-8
+         * instance.header.contenType -> instance.contentType -> global.header.contenType -> global.contentType
          * @param {Object} config 
          * @param {Object} newConfig 
          * @return {String}
@@ -312,10 +333,10 @@ const _ = {
             }
             const retObj = { val: false }
 
-            f(newConfig, retObj)
             loop(newConfig, retObj);
-            f(config, retObj)
+            f(newConfig, retObj)
             loop(config, retObj);
+            f(config, retObj)
 
             function f (c, o) {
                 const defaultKeys = Object.keys(defaultList);
@@ -350,6 +371,8 @@ const _ = {
                     }
                 }
             }
+
+            console.log(retObj.val)
 
             return retObj.val || defaultList.form;
         },
@@ -470,6 +493,59 @@ const _ = {
         ret.__proto__.example = example;
 
         return ret;
+    },
+
+    // 上传
+    upload (config) {
+        const canRetRep = { status: true };
+        const newConfig = _.interceptors.req(config, 1);
+
+        if (newConfig === false) return _.myPromise();
+
+        delete newConfig.header['content-type']
+        delete newConfig.method;
+
+        return new Promise((resolve, reject) => {
+            uni.uploadFile({
+                ...newConfig,
+                success: res => {
+                    res.data = JSON.parse(res.data);
+                    _.xhr.success(res, newConfig, canRetRep, resolve, reject);
+                },
+                fail: err => {
+                    _.xhr.fail(err, newConfig, canRetRep, reject);
+                },
+                complete: res => {
+                    _.xhr.complete(res, newConfig, canRetRep);
+                }
+            });
+        });
+    },
+
+    // 下载
+    download (config) {
+        const canRetRep = { status: true };
+        const newConfig = _.interceptors.req(config, 1);
+
+        if (newConfig === false) return _.myPromise();
+
+        delete newConfig.header['content-type'];
+        delete newConfig.method;
+
+        return new Promise((resolve, reject) => {
+            uni.downloadFile({
+                ...newConfig,
+                success: res => {
+                    _.xhr.success(res, newConfig, canRetRep, resolve, reject);
+                },
+                fail: err => {
+                    _.xhr.fail(err, newConfig, canRetRep, reject);
+                },
+                complete: res => {
+                    _.xhr.complete(res, newConfig, canRetRep);
+                }
+            });
+        });
     },
 
     myPromise () {
