@@ -1,21 +1,25 @@
 /*
- * @Description: uniapp request请求库 v1.3.8
+ * @Description: uniapp request请求库 v1.3.9
  * @Author: pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-05-31 19:18:48
- * @LastEditTime: 2019-09-06 08:49:02
+ * @LastEditTime: 2019-09-09 11:16:09
  * @instruction: https://www.yuque.com/pocky/aaeyux/pdik23
  * @github: https://github.com/2460392754/uniapp-tools/tree/master/request
  * @dcloud: https://ext.dcloud.net.cn/plugin?id=468
  */
 class MyRequest {
+    constructor() {
+        this.scopedInterceptors = {}
+    }
+
     // 添加局部拦截器
     addInterceptors = {
         request: fn => {
-            _.interceptors.request = fn;
+            this.scopedInterceptors.request = fn;
         },
         response: fn => {
-            _.interceptors.response = fn;
+            this.scopedInterceptors.response = fn;
         }
     };
 
@@ -59,7 +63,7 @@ class MyRequest {
     get (config) {
         const newConfig = _.merge.config(config, 'get');
 
-        return _.request(newConfig);
+        return _.request.call(this, newConfig);
     }
 
     /**
@@ -70,7 +74,7 @@ class MyRequest {
     post (config) {
         const newConfig = _.merge.config(config, 'post');
 
-        return _.request(newConfig);
+        return _.request.call(this, newConfig);
     }
 
     /**
@@ -81,7 +85,7 @@ class MyRequest {
     put (config) {
         const newConfig = _.merge.config(config, 'put');
 
-        return _.request(newConfig);
+        return _.request.call(this, newConfig);
     }
 
     /**
@@ -92,7 +96,7 @@ class MyRequest {
     delete (config) {
         const newConfig = _.merge.config(config, 'delete');
 
-        return _.request(newConfig);
+        return _.request.call(this, newConfig);
     }
 
     /**
@@ -103,7 +107,7 @@ class MyRequest {
     connect (config) {
         const newConfig = _.merge.config(config, 'connect');
 
-        return _.request(newConfig);
+        return _.request.call(this, newConfig);
     }
 
     /**
@@ -114,7 +118,7 @@ class MyRequest {
     head (config) {
         const newConfig = _.merge.config(config, 'head');
 
-        return _.request(newConfig);
+        return _.request.call(this, newConfig);
     }
 
     /**
@@ -125,7 +129,7 @@ class MyRequest {
     trace (config) {
         const newConfig = _.merge.config(config, 'trace');
 
-        return _.request(newConfig);
+        return _.request.call(this, newConfig);
     }
 
     /**
@@ -136,7 +140,7 @@ class MyRequest {
     options (config) {
         const newConfig = _.merge.config(config, 'post');
 
-        return _.request(newConfig);
+        return _.request.call(this, newConfig);
     }
 
     /**
@@ -158,7 +162,7 @@ class MyRequest {
     upload (config) {
         const newConfig = _.merge.config(config, 'post');
 
-        return _.upload(newConfig);
+        return _.upload.call(this, newConfig);
     }
 
     /**
@@ -168,7 +172,7 @@ class MyRequest {
     download (config) {
         const newConfig = _.merge.config(config, 'get');
 
-        return _.download(newConfig);
+        return _.download.call(this, newConfig);
     }
 }
 
@@ -185,8 +189,6 @@ const _ = {
 
     // 拦截器
     interceptors: {
-        request: null,
-        response: null,
         global: {
             request: null,
             response: null,
@@ -198,9 +200,7 @@ const _ = {
          * @param {number} count - 运行次数，用于递归的统计
          */
         req (config, count) {
-            const type = (count === 1 ? '.global' : '') + '.request';
-            const fnPath = "interceptors" + type;
-            const fn = _.getObjPathVal(fnPath);
+            let fn = count === 1 ? _.interceptors.global.request : this.scopedInterceptors.request;
 
             if (typeof fn === 'function') {
                 let ret = fn(config);
@@ -209,11 +209,11 @@ const _ = {
                     return false;
                 }
 
-                return count === 2 ? ret : _.interceptors.req(ret, 2);
+                return count === 2 ? ret : _.interceptors.req.call(this, ret, 2);
             }
 
             if (count === 2) return config;
-            return _.interceptors.req(config, 2);
+            return _.interceptors.req.call(this, config, 2);
         },
 
         /**
@@ -222,9 +222,7 @@ const _ = {
          * @param {number} count - 运行次数，用于递归的统计
          */
         rep (res, count) {
-            const type = (count === 1 ? '.global' : '') + '.response';
-            const fnPath = "interceptors" + type;
-            const fn = _.getObjPathVal(fnPath);
+            let fn = count === 1 ? _.interceptors.global.response : this.scopedInterceptors.response;
 
             if (typeof fn === 'function') {
                 let ret = fn(res);
@@ -238,11 +236,11 @@ const _ = {
                     return false;
                 }
 
-                return count === 2 ? ret : _.interceptors.rep(ret, 2);
+                return count === 2 ? ret : _.interceptors.rep.call(this, ret, 2);
             }
 
             if (count === 2) return res;
-            return _.interceptors.rep(res, 2);
+            return _.interceptors.rep.call(this, res, 2);
         }
     },
 
@@ -372,8 +370,6 @@ const _ = {
                 }
             }
 
-            console.log(retObj.val)
-
             return retObj.val || defaultList.form;
         },
 
@@ -401,7 +397,7 @@ const _ = {
     xhr: {
         // 数据回传 成功
         success (res, config, canRetRep, resolve, reject) {
-            const newRes = _.interceptors.rep(res, 1);
+            const newRes = _.interceptors.rep.call(this, res, 1);
             const bool = _.xhr.commonIntercept(newRes, config, canRetRep, reject);
 
             if (bool === false) return false;
@@ -410,7 +406,7 @@ const _ = {
 
         // 数据回传 失败
         fail (err, config, canRetRep, reject) {
-            const newErr = _.interceptors.rep(err, 1);
+            const newErr = _.interceptors.rep.call(this, err, 1);
             const bool = _.xhr.commonIntercept(newErr, config, canRetRep, reject);
 
             if (bool === false) return false;
@@ -468,8 +464,9 @@ const _ = {
      * @param {Object} config - 完整的配置数据
      */
     request (config) {
+        const ctx = this;
         const canRetRep = { status: true };
-        const newConfig = _.interceptors.req(config, 1);
+        const newConfig = _.interceptors.req.call(this, config, 1);
         let example, ret;
 
         if (newConfig === false) return _.myPromise();
@@ -478,10 +475,10 @@ const _ = {
             example = uni.request({
                 ...newConfig,
                 success: res => {
-                    _.xhr.success(res, newConfig, canRetRep, resolve, reject);
+                    _.xhr.success.call(ctx, res, newConfig, canRetRep, resolve, reject);
                 },
                 fail: err => {
-                    _.xhr.fail(err, newConfig, canRetRep, reject);
+                    _.xhr.fail.call(ctx, err, newConfig, canRetRep, reject);
                 },
                 complete: res => {
                     _.xhr.complete(res, newConfig, canRetRep);
@@ -497,8 +494,9 @@ const _ = {
 
     // 上传
     upload (config) {
+        const ctx = this;
         const canRetRep = { status: true };
-        const newConfig = _.interceptors.req(config, 1);
+        const newConfig = _.interceptors.req.call(this, config, 1);
 
         if (newConfig === false) return _.myPromise();
 
@@ -510,10 +508,10 @@ const _ = {
                 ...newConfig,
                 success: res => {
                     res.data = JSON.parse(res.data);
-                    _.xhr.success(res, newConfig, canRetRep, resolve, reject);
+                    _.xhr.success.call(ctx, res, newConfig, canRetRep, resolve, reject);
                 },
                 fail: err => {
-                    _.xhr.fail(err, newConfig, canRetRep, reject);
+                    _.xhr.fail.call(ctx, err, newConfig, canRetRep, reject);
                 },
                 complete: res => {
                     _.xhr.complete(res, newConfig, canRetRep);
@@ -524,8 +522,9 @@ const _ = {
 
     // 下载
     download (config) {
+        const ctx = this;
         const canRetRep = { status: true };
-        const newConfig = _.interceptors.req(config, 1);
+        const newConfig = _.interceptors.req.call(this, config, 1);
 
         if (newConfig === false) return _.myPromise();
 
@@ -536,10 +535,10 @@ const _ = {
             uni.downloadFile({
                 ...newConfig,
                 success: res => {
-                    _.xhr.success(res, newConfig, canRetRep, resolve, reject);
+                    _.xhr.success.call(ctx, res, newConfig, canRetRep, resolve, reject);
                 },
                 fail: err => {
-                    _.xhr.fail(err, newConfig, canRetRep, reject);
+                    _.xhr.fail.call(ctx, err, newConfig, canRetRep, reject);
                 },
                 complete: res => {
                     _.xhr.complete(res, newConfig, canRetRep);

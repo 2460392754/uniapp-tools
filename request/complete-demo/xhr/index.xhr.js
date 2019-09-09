@@ -2,7 +2,7 @@ import request from '../plugins/request/js/index'
 
 export default {
     // get请求 ,callback
-    getMockDataMethodGet ({ success, fail, complete } = {}, canRunState = true) {
+    getMockDataMethodGet ({ success, fail, complete } = {}) {
         const instance = new request();
 
         // 局部请求拦截器
@@ -25,9 +25,9 @@ export default {
         const r = instance.get({
             url: "/5cda87e31d38be0d2dd91a44/example/get",
             data: { text: 'method type is get' },
-            contentType: 'json',
+            // contentType: 'json',
             header: {
-                sid: 'xxx'
+                // sid: 'xxx'
             },
             success: res => {
                 console.log('👍 getMockDataGet success: ', res)
@@ -47,13 +47,13 @@ export default {
         });
 
         // 停止发生请求
-        !canRunState && instance.stop(r)
         // instance.stop(r)
     },
 
     // post请求 ,callback
     getMockDataMethodPost () {
         const instance = new request();
+
         const r = instance.post({
             url: "/5cda87e31d38be0d2dd91a44/example/post",
             data: { text: 'method type is post' },
@@ -93,7 +93,6 @@ export default {
         const instance = new request();
         const r = instance.get({
             url: "/5cda87e31d38be0d2dd91a44/example/get",
-            // url: "/5cda87e31d38be0d2dd91a44/example/get_400",
             data: { text: 'method type is get' },
             contentType: 'form',
         });

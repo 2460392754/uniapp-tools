@@ -1,7 +1,7 @@
 # pocky-request
 
 <a href="https://github.com/2460392754/uniapp-tools">
-<img src="https://img.shields.io/badge/version-1.3.8-blue.svg?cacheSeconds=2592000" />
+<img src="https://img.shields.io/badge/version-1.3.9-blue.svg?cacheSeconds=2592000" />
 <img src="https://badgen.net/github/stars/2460392754/uniapp-tools">
 <img src="https://badgen.net/github/forks/2460392754/uniapp-tools">
 </a>

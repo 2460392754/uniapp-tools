@@ -11,13 +11,13 @@ export default {
         getMockDataMethodGet () {
             Api.getMockDataMethodGet({
                 success: res => {
-                    console.log('👍👍👍👍👍 success callback')
+                    // console.log('👍👍👍👍👍 success callback')
                 },
                 fail: err => {
-                    console.log('⛔⛔⛔⛔⛔ fail callback')
+                    // console.log('⛔⛔⛔⛔⛔ fail callback')
                 },
                 complete: res => {
-                    console.log('😐😐😐😐😐 complete callback')
+                    // console.log('😐😐😐😐😐 complete callback')
                 }
             });
         },
@@ -81,12 +81,12 @@ export default {
     },
 
     created () {
-        // this.getMockDataMethodGet();
+        this.getMockDataMethodGet();
         // this.getMockDataMethodPost();
         // this.getMockErrDataMethodGet();
         // this.getMockDataMethodGetPromise();
         // this.getMockDataMethodPut();
-        this.mockUpload();
+        // this.mockUpload();
         // this.mockDownload();
     },
 }
