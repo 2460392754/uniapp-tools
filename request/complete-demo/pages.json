@@ -3,7 +3,37 @@
         {
             "path": "pages/index/index",
             "style": {
-                "navigationBarTitleText": "js"
+                "navigationBarTitleText": "pocky-request"
+            }
+        },
+        {
+            "path": "pages/method/get_200",
+            "style": {
+                "navigationBarTitleText": "get 200"
+            }
+        },
+        {
+            "path": "pages/method/get_400",
+            "style": {
+                "navigationBarTitleText": "get 400"
+            }
+        },
+        {
+            "path": "pages/method/post_200",
+            "style": {
+                "navigationBarTitleText": "post 200"
+            }
+        },
+        {
+            "path": "pages/method/download",
+            "style": {
+                "navigationBarTitleText": "download"
+            }
+        },
+        {
+            "path": "pages/method/upload",
+            "style": {
+                "navigationBarTitleText": "upload"
             }
         }
     ],

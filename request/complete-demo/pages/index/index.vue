@@ -1,93 +1,36 @@
 <template>
-    <div></div>
+    <view id="index-page">
+        <navigator v-for="(item,index) of list"
+                   :key="index"
+                   :url="item.path">
+            <button class='btn'
+                    type="primary">{{item.title}}</button>
+        </navigator>
+    </view>
 </template>
 
 <script>
-import Api from '../../xhr/index.xhr.js'
-
 export default {
-    methods: {
-        // get请求 ,callback
-        getMockDataMethodGet () {
-            Api.getMockDataMethodGet({
-                success: res => {
-                    // console.log('👍👍👍👍👍 success callback')
-                },
-                fail: err => {
-                    // console.log('⛔⛔⛔⛔⛔ fail callback')
-                },
-                complete: res => {
-                    // console.log('😐😐😐😐😐 complete callback')
-                }
-            });
-        },
-
-        // post请求 ,callback
-        getMockDataMethodPost () {
-            Api.getMockDataMethodPost()
-        },
-
-        // get请求，状态码 400 ,callback
-        getMockErrDataMethodGet () {
-            Api.getMockErrDataMethodGet();
-        },
-
-        // get请求，Promise
-        getMockDataMethodGetPromise () {
-            Api.getMockDataMethodGetPromise()
-                .then(res => {
-                    console.log('👍👍👍👍👍 then', res)
-                })
-                .catch(err => {
-                    console.log('⛔⛔⛔⛔⛔ catch', err)
-                })
-                .finally(() => {
-                    console.log('😐😐😐😐😐 finally')
-                })
-        },
-
-        // put请求，Promise
-        getMockDataMethodPut () {
-            Api.getMockDataMethodPut()
-                .then(res => {
-                    console.log('👍👍👍👍👍 then', res)
-                })
-                .catch(err => {
-                    console.log('⛔⛔⛔⛔⛔ catch', err)
-                })
-        },
-
-        // 上传
-        mockUpload () {
-            Api.mockUpload()
-                .then(res => {
-                    console.log('👍👍👍👍👍 then', res)
-                })
-                .catch(err => {
-                    console.log('⛔⛔⛔⛔⛔ catch', err)
-                })
-        },
-
-        // 下载
-        mockDownload () {
-            Api.mockDownload()
-                .then(res => {
-                    console.log('👍👍👍👍👍 then', res)
-                })
-                .catch(err => {
-                    console.log('⛔⛔⛔⛔⛔ catch', err)
-                })
+    data () {
+        return {
+            list: [
+                { title: 'get 200', path: '/pages/method/get_200' },
+                { title: 'get 400', path: '/pages/method/get_400' },
+                { title: 'post 200', path: '/pages/method/post_200' },
+                { title: 'download', path: '/pages/method/download' },
+                { title: 'upload', path: '/pages/method/upload' },
+            ]
         }
-    },
-
-    created () {
-        this.getMockDataMethodGet();
-        // this.getMockDataMethodPost();
-        // this.getMockErrDataMethodGet();
-        // this.getMockDataMethodGetPromise();
-        // this.getMockDataMethodPut();
-        // this.mockUpload();
-        // this.mockDownload();
     },
 }
 </script>
+
+<style lang="scss">
+#index-page {
+    .btn {
+        background: #2d8cf0;
+        margin: 40upx;
+        border: 4px solid #2d7acc;
+    }
+}
+</style>
