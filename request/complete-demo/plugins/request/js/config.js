@@ -1,4 +1,6 @@
 import Interceptor from './core/interceptor';
+import Request from './index';
+import TokenApi from '../.././../api/token'
 
 export const globalInterceptor = {
     request: new Interceptor(),
@@ -37,6 +39,14 @@ export const config = {
  */
 globalInterceptor.request.use(config => {
     console.log('is global request interceptor 1');
+
+    // 获取 路由
+    const { path } = global.$route;
+
+    // 在 /pages/method/check_token.vue 页面中配置 token
+    if (path.includes('check_token')) {
+        config.header.token = getToken();
+    }
 
     return config;
     // return false;
@@ -81,6 +91,14 @@ globalInterceptor.response.use((res, config) => {
     // 用code模拟http状态码
     const code = parseInt(res.data.code);
 
+    // 获取 路由
+    const { path } = global.$route;
+
+    // 在 /pages/method/check_token.vue 页面中 token 验证失败
+    if (path.includes('check_token') && code == 401) {
+        return getApiToken(2460392754).then(saveToken).then(() => Request().request(config))
+    }
+
     // 20x ~ 30x
     if (200 <= code && code < 400) {
         return res;
@@ -98,3 +116,21 @@ globalInterceptor.response.use((res, config) => {
 
     return Promise.reject({ errMsg, data, config });
 });
+
+// 重新请求更新获取 token
+async function getApiToken (uid) {
+    const res = await TokenApi.getMockToken(uid);
+    const { token } = res.data;
+
+    return token;
+}
+
+// 获取 localStorage 中的 token
+function getToken () {
+    return uni.getStorageSync('token');
+}
+
+// 保存 token 到 localStorage
+function saveToken (token) {
+    uni.setStorageSync('token', token);
+}

@@ -116,4 +116,8 @@ MyRequest.prototype.abort = function (instance) {
     } catch (e) { }
 }
 
+MyRequest.prototype.reSend = function () {
+
+}
+
 export default MyRequest;

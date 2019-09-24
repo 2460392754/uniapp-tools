@@ -49,10 +49,6 @@ function mergeConfig (defaultConfig, instanceConfig = {}) {
         }
     });
 
-    // if (newConfig.isProxy === null || newConfig.isProxy === false || typeof newConfig.isProxy === 'undefined') {
-    // newConfig.url = Tools.getFullURL(newConfig.baseURL, newConfig.url);
-    // }
-
     newConfig.url = Tools.getFullURL(newConfig.baseURL, newConfig.url);
     newConfig.url = Tools.paramsToURL(newConfig);
     newConfig.header = Tools.adapterContentType(defaultConfig.header, instanceConfig.header, newConfig.header);

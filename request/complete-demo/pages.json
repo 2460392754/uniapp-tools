@@ -35,6 +35,12 @@
             "style": {
                 "navigationBarTitleText": "upload"
             }
+        },
+        {
+            "path": "pages/method/check_token",
+            "style": {
+                "navigationBarTitleText": "check token"
+            }
         }
     ],
     "globalStyle": {

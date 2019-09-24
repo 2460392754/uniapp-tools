@@ -19,6 +19,7 @@ export default {
                 { title: 'post 200', path: '/pages/method/post_200' },
                 { title: 'download', path: '/pages/method/download' },
                 { title: 'upload', path: '/pages/method/upload' },
+                { title: 'check token', path: '/pages/method/check_token' },
             ]
         }
     },

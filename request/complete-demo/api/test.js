@@ -38,7 +38,7 @@ export default {
             method: 'get',
             header: {
                 // sid: 'xx',
-                ContentType: "application/json"
+                // ContentType: "application/json"
             },
             params: {
                 name: 'xxx',
@@ -49,10 +49,10 @@ export default {
             }
         });
 
-        // 超时1500ms就中断请求
+        // 超时 3000ms 就中断请求
         setTimeout(() => {
             r.abort(instance)
-        }, 1500);
+        }, 6000);
 
         return instance;
     },
