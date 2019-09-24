@@ -12,6 +12,6 @@ export default {
             url: '/test/token/check',
             method: 'get',
             header: { token }
-        })
+        });
     }
 }

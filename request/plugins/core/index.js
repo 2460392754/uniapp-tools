@@ -111,13 +111,8 @@ let arr1 = ['delete', 'get', 'head', 'options', 'post', 'put', 'patch', 'upload'
 // 中断 发送中的请求
 MyRequest.prototype.abort = function (instance) {
     try {
-        console.log(instance.example)
         instance.example.abort()
     } catch (e) { }
-}
-
-MyRequest.prototype.reSend = function () {
-
 }
 
 export default MyRequest;
