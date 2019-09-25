@@ -79,7 +79,7 @@ MyRequest.prototype.request = function (config = {}) {
         if (typeof fn !== 'function') return true;
 
         promise = promise[type](obj => {
-            let ret = fn(obj, newConfig);
+            let ret = fn(obj, config);
 
             // return false 就会跳出promise的链式函数
             if (ret === false) {

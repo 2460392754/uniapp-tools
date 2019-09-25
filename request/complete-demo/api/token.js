@@ -11,7 +11,9 @@ export default {
         return Request().request({
             url: '/test/token/check',
             method: 'get',
-            header: { token }
+            params: { name: 'xxx' },
+            header: { token, uid: 'ux' },
+            count: 0 // 用来记录 每个实例请求的 请求次数（可以用来判断 重新发送请求的次数）
         });
     }
 }

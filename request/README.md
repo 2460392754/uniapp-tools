@@ -1,6 +1,6 @@
 # pocky-request
 
-<img src="https://img.shields.io/badge/version-2.0.2-blue.svg?cacheSeconds=2592000" /><br />
+<img src="https://img.shields.io/badge/version-2.0.3-blue.svg?cacheSeconds=2592000" /><br />
 
 ## 介绍
 
@@ -13,6 +13,7 @@
 - 支持所有 method 方法
 - 支持 params 参数属性
 - 支持文件上传和下载
+- 支持重新发送请求(刷新 token)
 
 ## 更新日志
 
