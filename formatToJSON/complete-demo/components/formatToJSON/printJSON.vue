@@ -1,11 +1,11 @@
 <!--
- * @Description: uniapp formatToJSON v1.0.0
+ * @Description: uniapp formatToJSON v1.0.1
  * @Author: pocky
  * @Email 2460392754@qq.com
  * @Date: 2019-05-31 19:18:48
- * @LastEditTime: 2019-09-23 15:02:10
+ * @LastEditTime: 2019-09-25 13:55:26
  * @instruction: https://www.yuque.com/pocky/aaeyux/adkd6g
- * @github: https://github.com/2460392754/uniapp-tools/
+ * @github: https://github.com/2460392754/uniapp-tools/tree/master/formatToJSON
  * @dcloud: https://ext.dcloud.net.cn/plugin?id=798
  -->
  
@@ -38,6 +38,12 @@ export default {
 
     components: {
         PrintTemplate
+    },
+
+    watch: {
+        value (val) {
+            this.node = format(val);
+        }
     }
 }
 </script>

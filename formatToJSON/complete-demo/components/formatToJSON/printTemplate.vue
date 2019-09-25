@@ -117,6 +117,12 @@ export default {
 
     components: {
         VPrintTemplate,
+    },
+
+    watch: {
+        node () {
+            this.$nextTick(this.$_forEach)
+        }
     }
 }
 </script>
