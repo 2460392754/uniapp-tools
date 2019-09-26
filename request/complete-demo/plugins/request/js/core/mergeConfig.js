@@ -49,6 +49,7 @@ function mergeConfig (defaultConfig, instanceConfig = {}) {
         }
     });
 
+    newConfig.instanceURL = instanceConfig.url;
     newConfig.url = Tools.getFullURL(newConfig.baseURL, newConfig.url);
     newConfig.url = Tools.paramsToURL(newConfig);
     newConfig.header = Tools.adapterContentType(defaultConfig.header, instanceConfig.header, newConfig.header);

@@ -88,9 +88,10 @@ globalInterceptor.response.use((res, config) => {
     // 20x ~ 30x
     if (200 <= code && code < 400) {
         return res;
-    } else if (code == 401 && config.count === 0) {
+    } else if (code == 401 && config.count === 0) { // token 验证失败, 并且这个实例是第一次重复请求
         config.count++;
-        return getApiToken(24603927534).then(saveToken).then(() => Request().request(config));
+        config.url = config.instanceURL
+        return getApiToken(2460392754).then(saveToken).then(() => Request().request(config));
     } else {
         return Promise.reject(res, config);
     }

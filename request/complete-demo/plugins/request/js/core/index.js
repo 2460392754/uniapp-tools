@@ -59,27 +59,34 @@ MyRequest.prototype.request = function (config = {}) {
     /**
      * 链式合并
      * 合并顺序格式
-     * `Promise.resolve()`
-     * `.then(global_Request)`
-     * `    .catch(global_Request)`
-     * `.then(scoped_Request)`
-     * `    .catch(scoped_Request)`
-     * `.then(发送请求)`
-     * `    .catch(请求错误、超时)`
-     * `.then(global_Response)`
-     * `    .catch(global_Response)`
-     * `.then(scoped_Response)`
-     * `    .catch(scoped_Response)`
-     * `.then(获取请求的返回值)`
-     * `    .catch(拦截异常的返回值)`
+     * 
+     * ``` javascript
+     * Promise.resolve()
+     * .then(global_Request)
+     * .catch(global_Request)
+     * .then(scoped_Request)
+     * .catch(scoped_Request)
+     * .then(发送请求)
+     * .catch(请求错误、超时)
+     * .then(global_Response)
+     * .catch(global_Response)
+     * .then(scoped_Response)
+     * .catch(scoped_Response)
+     * .then(获取请求的返回值)
+     * .catch(拦截异常的返回值)
+     * ```
      */
     chain.forEach(item => {
         const [[type, fn]] = Object.entries(item);
 
-        if (typeof fn !== 'function') return true;
+        if (typeof fn !== 'function') {
+            return true;
+        }
 
         promise = promise[type](obj => {
-            let ret = fn(obj, config);
+            const interceptorConfig = MergeConfig(this.defaultConfig, config);
+
+            let ret = fn(obj, interceptorConfig);
 
             // return false 就会跳出promise的链式函数
             if (ret === false) {

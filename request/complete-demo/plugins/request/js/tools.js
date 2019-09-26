@@ -167,4 +167,9 @@ $.toJSON = function (anyVal) {
     }
 }
 
+// 删除 url 上的参数
+// $.delURLQueryString = function (url) {
+//     return url.replace(/\?[\S|\s]+/, '');
+// }
+
 export default $;

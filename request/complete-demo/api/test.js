@@ -62,10 +62,12 @@ export default {
         return global.$http.request({
             url: '/test/get/400',
             method: 'get',
+            header: { uid: 'xx' },
             params: {
                 name: 'xxx',
                 age: 20
             },
+            
         })
 
         // return Request().request({
