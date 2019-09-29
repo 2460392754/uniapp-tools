@@ -1,4 +1,4 @@
-export type Method =
+type Method =
     | 'get' | 'GET'
     | 'post' | 'POST'
     | 'put' | 'PUT'
@@ -12,7 +12,7 @@ export type Method =
 
 
 // 请求相同配置
-export interface SameConfig {
+interface SameConfig {
     url?: string,
     method?: Method,
     header?: any,
@@ -20,12 +20,12 @@ export interface SameConfig {
 }
 
 // 普通请求配置数据
-export interface RequestConfig extends SameConfig {
+interface RequestConfig extends SameConfig {
     data?: any
 }
 
 // 下载、上传相同配置
-export interface DownloadAndUploadSameConfig extends SameConfig {
+interface DownloadAndUploadSameConfig extends SameConfig {
     onProgressUpdate?(): void,
     onHeadersReceived?(): void,
     offProgressUpdate?(): void,
@@ -33,10 +33,10 @@ export interface DownloadAndUploadSameConfig extends SameConfig {
 }
 
 // 下载请求配置数据
-export interface DownloadConfig extends DownloadAndUploadSameConfig { }
+interface DownloadConfig extends DownloadAndUploadSameConfig { }
 
 // 上传请求配置数据
-export interface uploadConfig extends DownloadAndUploadSameConfig {
+interface uploadConfig extends DownloadAndUploadSameConfig {
     files?: Array<string>,
     fileType?: string,
     filePath: string,
@@ -45,13 +45,13 @@ export interface uploadConfig extends DownloadAndUploadSameConfig {
 }
 
 // 拦截器
-export interface Interceptor {
+interface Interceptor {
     use(fulfilled?, rejected?): number,
     eject(id: number): void;
 }
 
 // 实例
-export interface Instance {
+interface Instance {
     (config: RequestConfig);
     (url: string, config?: RequestConfig);
     interceptors: {

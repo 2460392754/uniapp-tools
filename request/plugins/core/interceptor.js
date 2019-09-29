@@ -1,9 +1,7 @@
-const handlers = Symbol();
-
 // 拦截器
 class Interceptor {
     constructor() {
-        this[handlers] = [];
+        this.handlers = [];
     }
 
     /**
@@ -13,12 +11,12 @@ class Interceptor {
      * @return {Number} 拦截器队列中注册的下标id
      */
     use (fulfilled, rejected) {
-        this[handlers].push({
+        this.handlers.push({
             fulfilled,
             rejected
         });
 
-        return this[handlers].length - 1;
+        return this.handlers.length - 1;
     }
 
     /**
@@ -26,7 +24,7 @@ class Interceptor {
      * @param {Number} id 在拦截器队列中的下标id
      */
     eject (id) {
-        this[handlers][id] && (this[handlers][id] = null);
+        this.handlers[id] && (this.handlers[id] = null);
     }
 
     /**
@@ -34,7 +32,7 @@ class Interceptor {
      * @param {Function} fn 
      */
     forEach (fn) {
-        this[handlers].forEach(item => {
+        this.handlers.forEach(item => {
             item && fn(item);
         });
     }

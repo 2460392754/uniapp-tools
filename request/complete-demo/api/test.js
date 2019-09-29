@@ -62,12 +62,12 @@ export default {
         return global.$http.request({
             url: '/test/get/400',
             method: 'get',
-            header: { uid: 'xx' },
+            header: { uid: 'xx', },
             params: {
                 name: 'xxx',
                 age: 20
             },
-            
+
         })
 
         // return Request().request({
@@ -83,9 +83,17 @@ export default {
     // post 请求， 200 响应码
     getMockDataMethodPost200 () {
         return Request().post('/test/post/200', {
+            header: {
+                contentType: 'application/json'
+            },
             data: {
                 name: 'xx',
                 age: 20,
+                arr: [1, 2, 3, [11, 22]],
+                obj: {
+                    null: null
+                },
+                null: null
             }
         })
     },

@@ -28,12 +28,12 @@ $.deepCopy = function (...args) {
 }
 
 const assginValue = function (key, val, container, callback) {
-    const vType = typeof val === 'object';
-    const cType = typeof container[key] === 'object';
+    const cTypeIsObj = $.isType('Object', container[key]);
+    const vTypeIsObj = $.isType('Object', val);
 
-    if (cType && vType) {
+    if (cTypeIsObj && vTypeIsObj) {
         container[key] = callback(container[key], val);
-    } else if (vType) {
+    } else if (vTypeIsObj) {
         container[key] = callback({}, val);
     } else {
         container[key] = val;

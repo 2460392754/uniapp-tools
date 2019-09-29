@@ -21,7 +21,7 @@ export const config = {
         // uid: 'xxxx',
         contentType: 'application/x-www-form-urlencoded'
         // 'Content-Type': 'application/json'
-    }
+    },
 }
 
 
@@ -38,7 +38,7 @@ export const config = {
  * @param {Object} config 发送请求的配置数据
  */
 globalInterceptor.request.use(config => {
-    console.log('is global request interceptor 1');
+    console.log('is global request interceptor 1', config);
 
     config.header.token = getToken();
 
@@ -90,7 +90,7 @@ globalInterceptor.response.use((res, config) => {
         return res;
     } else if (code == 401 && config.count === 0) { // token 验证失败, 并且这个实例是第一次重复请求
         config.count++;
-        config.url = config.instanceURL
+        config.url = config.instanceURL;
         return getApiToken(2460392754).then(saveToken).then(() => Request().request(config));
     } else {
         return Promise.reject(res, config);

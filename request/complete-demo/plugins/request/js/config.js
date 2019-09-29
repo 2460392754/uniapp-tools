@@ -21,7 +21,7 @@ export const config = {
         // uid: 'xxxx',
         contentType: 'application/x-www-form-urlencoded'
         // 'Content-Type': 'application/json'
-    }
+    },
 }
 
 
@@ -38,7 +38,7 @@ export const config = {
  * @param {Object} config 发送请求的配置数据
  */
 globalInterceptor.request.use(config => {
-    console.log('is global request interceptor 1');
+    console.log('is global request interceptor 1', config);
 
     config.header.token = getToken();
 
