@@ -40,7 +40,7 @@ export const config = {
 globalInterceptor.request.use(config => {
     console.log('is global request interceptor 1', config);
 
-    config.header.token = getToken();
+    getToken() && (config.header.token = getToken());
 
     return config;
     // return false;

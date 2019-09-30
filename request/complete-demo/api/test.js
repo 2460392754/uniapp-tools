@@ -124,9 +124,7 @@ export default {
         let instance = r.upload('/test/upload', {
             name: 'file',
             filePath: path,
-            header: {
-                contentType: "multipart/form-data"
-            },
+            header: {},
             formData: {
                 text: 'is upload file'
             },

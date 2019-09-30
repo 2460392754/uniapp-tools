@@ -54,6 +54,10 @@ function mergeConfig (defaultConfig, instanceConfig = {}) {
     newConfig.url = Tools.paramsToURL(newConfig);
     newConfig.header = Tools.adapterContentType(defaultConfig.header, instanceConfig.header, newConfig.header);
 
+    if (newConfig.method.toLowerCase() == 'upload') {
+        delete newConfig.header['content-type'];
+    }
+
     return newConfig;
 }
 

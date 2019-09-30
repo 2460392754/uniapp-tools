@@ -34,13 +34,13 @@ export default {
 
         $_getApiData (path) {
             Api.getMockDataMethodUpload(path)
-            .then(res => {
-                console.log('is then', res)
-                this.res = res;
-            }).catch(err => {
-                console.error('is catch', err)
-                this.err = err;
-            });
+                .then(res => {
+                    console.log('is then', res)
+                    this.res = res;
+                }).catch(err => {
+                    console.error('is catch', err)
+                    this.err = err;
+                });
         }
     },
 
