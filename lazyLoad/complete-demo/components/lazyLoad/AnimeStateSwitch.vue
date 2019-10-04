@@ -1,9 +1,12 @@
 <template>
     <view v-if="cIf"
           v-show="cShow"
-          class='stateSwitch'
+          class='component-state-switch'
           :id="idName"
-          :style="{opacity: Number(cOpacity)}">
+          :style="{
+              opacity: Number(cOpacity),
+              transition: `opacity ${time / 1000}s ease-in-out`
+           }">
         <slot></slot>
     </view>
 </template>
@@ -16,19 +19,27 @@ export default {
             default: true
         },
 
+        // 
         isShow: {
             type: Boolean,
             default: true
         },
 
+        // 是否透明
         isOpacity: {
             type: [Boolean, Number],
             default: true
         },
 
+        // 设置id样式
         idName: {
             type: String,
             default: null
+        },
+
+        // 动画过度时间
+        time: {
+            type: Number,
         }
     },
 
@@ -50,20 +61,14 @@ export default {
 
             setTimeout(() => {
                 this.cShow = this.isShow;
-            }, 500)
+            }, this.time)
         },
 
         isOpacity (flag) {
             setTimeout(() => {
                 this.cOpacity = flag
-            }, 500)
+            }, this.time)
         }
     }
 }
 </script>
-
-<style scoped>
-.stateSwitch {
-    transition: opacity 0.5s;
-}
-</style>

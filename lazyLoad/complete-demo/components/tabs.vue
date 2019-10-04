@@ -18,6 +18,7 @@
 <script>
 export default {
     props: {
+        // tab 显示的标题
         name: {
             type: Array,
             default: () => []

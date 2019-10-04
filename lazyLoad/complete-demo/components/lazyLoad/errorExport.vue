@@ -5,9 +5,10 @@
 </template>
 
 <script>
-import error1 from './error-1.vue';
+import error1 from './anime/error-1.vue';
 
 export default {
+    // 组件名称
     props: {
         type: String
     },
@@ -17,6 +18,3 @@ export default {
     }
 }
 </script>
-
-<style>
-</style>

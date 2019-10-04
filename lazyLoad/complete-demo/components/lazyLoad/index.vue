@@ -1,22 +1,12 @@
-<!--
- * @Description: 图片懒加载、预加载 v1.2.4
- * @Author: pocky
- * @Email 2460392754@qq.com
- * @Date: 2019-06-12 18:47:15
- * @LastEditTime: 2019-08-01 11:14:35
- * @instruction: https://www.yuque.com/pocky/aaeyux/neg4m1
- * @github: https://github.com/2460392754/uniapp-tools/tree/master/lazyLoad
- * @dcloud https://ext.dcloud.net.cn/plugin?id=495
- -->
-
 <template>
-    <view class="img-lazyLoad">
+    <view class="component-img-lazyload">
         <!-- img -->
         <anime-state-switch ref="img"
-                            :isOpacity="isShowImg"
-                            class='load-img-container'>
-            <image v-if="imgLoadStart"
-                   class='load-img'
+                            :is-opacity="isShowImg"
+                            :time="animeSwitchTime"
+                            class="img-container">
+            <image v-if="imgLoadState.start"
+                   class='img'
                    :src="src"
                    :mode="mode"
                    @load="imgLoadSuccess"
@@ -25,31 +15,33 @@
 
         <!-- loading-img or loading-component -->
         <anime-state-switch ref="loading"
-                            :isIf="hasLoadingRes"
-                            :isShow="!isShowImg"
-                            :idName="uuid"
-                            class='load-loading-container'>
+                            :is-if="hasLoadingRes"
+                            :is-show="!isShowImg"
+                            :id-name="guid"
+                            :time="animeSwitchTime"
+                            class='loading-container'>
             <image v-if="path.loading"
                    :src="path.loading"
-                   class="load-loading-img"
+                   class="loading-img"
                    mode="widthFix"></image>
 
-            <view v-show="imgLoadStart"
-                  class='load-loading-component'>
+            <view v-show="imgLoadState.start"
+                  class='component-loading'>
                 <loading-export :type="componentName.loading"></loading-export>
             </view>
         </anime-state-switch>
 
         <!-- error-img or error-component  -->
         <anime-state-switch ref="error"
-                            :isIf="hasErrorRes"
-                            class='load-error-container'>
+                            :is-if="hasErrorRes"
+                            :time="animeSwitchTime"
+                            class='error-container'>
             <image v-if="path.error"
                    :src="path.error"
-                   class="load-error-img"
+                   class="error-img"
                    mode="widthFix"></image>
 
-            <view class='load-error-component'>
+            <view class='component-error'>
                 <error-export :type="componentName.error"></error-export>
             </view>
         </anime-state-switch>
@@ -57,10 +49,11 @@
 </template>
 
 <script>
-import lazyLoadPlugins from "../../plugins/lazyLoad/js/lazyLoad";
-import LoadingExport from './animation/loadingExport';
-import ErrorExport from './animation/errorExport';
 import AnimeStateSwitch from './AnimeStateSwitch';
+import loadingExport from './loadingExport';
+import errorExport from './errorExport';
+import lazyLoadPlugin from '../../plugins/lazyLoad/js/index';
+import Tools from '../../plugins/lazyLoad/js/tools'
 
 export default {
     props: {
@@ -73,55 +66,59 @@ export default {
         // 图片裁剪、缩放的模式
         mode: {
             type: String,
-            default: ""
+            default: "scaleToFill"
         },
 
         // 当前组件所在的scroll标签内的id
-        scrollid: {
-            type: [String, null],
-            default: null
+        scrollId: {
+            type: String
         }
     },
 
     data () {
         return {
-            // 图片的id
-            uuid: "",
+            // 图片 id
+            guid: "",
 
-            // 图片加载开始
-            imgLoadStart: false,
-
-            // 图片加载结束
-            imgLoadEnd: false,
+            // 动画过度时间
+            animeSwitchTime: 500,
 
             // 是否显示图片
             isShowImg: false,
 
-            // 其他图片路径
+            // 图片加载状态
+            imgLoadState: {
+                start: false,
+                end: false
+            },
+
+            // 加载动画的图片名称
             path: {
                 loading: null,
                 error: null
             },
 
-            // 计数次数
+            // 加载动画的组件名称
+            componentName: {
+                loading: null,
+                error: null
+            },
+
+            // 统计次数
             count: {
                 nextLoad: 0,
                 loadingAnime: 0
             },
-
-            // 组件名称
-            componentName: {
-                loading: null,
-                error: null
-            }
         }
     },
 
     computed: {
+        // 是否有 loading 资源
         hasLoadingRes () {
             return Boolean(this.path.loading || this.componentName.loading)
         },
 
+        // 是否有 error 资源
         hasErrorRes () {
             return Boolean(this.path.error || this.componentName.error)
         }
@@ -130,14 +127,32 @@ export default {
     methods: {
         // 初始化
         $_init () {
-            this.uuid = this.$_createUUID();
+            this.guid = Tools.getGUID();
+            this.animeSwitchTime = lazyLoadPlugin.getConfig().animeSwitchTime;
             this.$_setImgType("loading");
-            this.$_registerImg();
+            this.$_on();
         },
 
-        // 设置图片类型
+        // 订阅并监听图片加载状态
+        $_on () {
+            lazyLoadPlugin.on({
+                id: this.scrollId,
+                guid: '#' + this.guid,
+                context: this.$refs.loading,
+                fn: () => {
+                    return new Promise((resolve, reject) => {
+                        this.imgLoadState.start = true;
+                        this.count.loadingAnime++;
+                        this.$_minLoadAnime()
+                        this.$watch("imgLoadState.end", resolve);
+                    })
+                }
+            })
+        },
+
+        // 设置图片
         $_setImgType (type) {
-            let config = lazyLoadPlugins.getConfig();
+            const config = lazyLoadPlugin.getConfig();
 
             if (config[type].type === 'img') {
                 this.path[type] = config[type].path;
@@ -146,47 +161,19 @@ export default {
             }
         },
 
-        // 创建 uuid
-        $_createUUID () {
-            let ranStr = Math.random().toString(32).substring(2);
-            let timestamp = new Date().getTime();
-
-            return "uuid-" + ranStr + timestamp;
-        },
-
-        // 注册图片对象 ,监听图片加载状态
-        $_registerImg () {
-            lazyLoadPlugins.addImg({
-                ctx: this.$refs.loading,
-                uuid: this.uuid,
-                callback: () => {
-                    return new Promise((resolve, reject) => {
-                        if (this.imgLoadStart === true) reject();
-
-                        this.imgLoadStart = true;
-                        this.count.loadingAnime++;
-
-                        this.$_minLoadAnime()
-                        this.$watch("imgLoadEnd", resolve);
-                    });
-                }
-            }, this.scrollid);
-        },
-
         // 图片加载完成
         imgLoadSuccess () {
-            // console.log('success')
-            this.imgLoadCommon();
+            this.$_imgLoadCommon();
         },
 
         // 图片加载出错
         imgLoadError () {
-            // console.log('error')
-            this.imgLoadCommon();
+            this.$_imgLoadCommon();
             this.$_setImgType("error")
         },
 
-        imgLoadCommon () {
+        // 图片加载相同部分
+        $_imgLoadCommon () {
             this.count.nextLoad++;
             this.count.loadingAnime++;
             this.$_minLoadAnime()
@@ -194,9 +181,9 @@ export default {
 
         // 最少过度动画时间
         $_minLoadAnime () {
-            if (this.count.loadingAnime !== 2) return;
+            if (this.count.loadingAnime != 2) return;
 
-            let { minLoadAnimeTime: time } = lazyLoadPlugins.getConfig()
+            let { minLoadAnimeTime: time } = lazyLoadPlugin.getConfig()
 
             setTimeout(() => {
                 this.isShowImg = true;
@@ -206,12 +193,12 @@ export default {
 
         // 图片加载间隔(停顿)时间
         $_intervalLoad () {
-            let { intervalTime: time } = lazyLoadPlugins.getConfig()
+            let { intervalTime: time } = lazyLoadPlugin.getConfig()
 
             setTimeout(() => {
-                this.imgLoadEnd = true;
+                this.imgLoadState.end = true;
             }, time);
-        },
+        }
     },
 
     watch: {
@@ -220,53 +207,61 @@ export default {
         }
     },
 
-    components: {
-        LoadingExport,
-        ErrorExport,
-        AnimeStateSwitch
-    },
-
     created () {
         this.$_init();
+    },
+
+    components: {
+        AnimeStateSwitch,
+        loadingExport,
+        errorExport
     }
 }
 </script>
 
-<style>
-.img-lazyLoad {
+<style lang="scss">
+.component-img-lazyload {
     position: relative;
-    width: fit-content;
-}
 
-.img-lazyLoad .load-loading-container,
-.img-lazyLoad .load-error-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
+    .img {
+        // width: auto;
+        height: auto;
+    }
 
-.img-lazyLoad .load-img {
-    height: max-content;
-}
+    .component-loading,
+    .component-error,
+    .loading-img,
+    .error-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+    }
 
-.img-lazyLoad .load-loading-img,
-.img-lazyLoad .load-error-img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 60%;
-    margin: 0 auto;
-}
+    .component-loading,
+    .component-error {
+        width: max-content;
+        height: max-content;
+    }
 
-.img-lazyLoad .load-loading-component,
-.img-lazyLoad .load-error-component {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    .loading-img,
+    .error-img {
+        width: 100upx;
+    }
+
+    .loading-img {
+        animation: ball-scale-multiple 2s 0s linear infinite;
+    }
+
+    @keyframes ball-scale-multiple {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 }
 </style>

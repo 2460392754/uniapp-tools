@@ -45,9 +45,7 @@ export default {}
     opacity: 0;
     width: 60px;
     height: 60px;
-    -webkit-animation: ball-scale-multiple 1s 0s linear infinite;
     animation: ball-scale-multiple 1s 0s linear infinite;
-    /* background-color: #fff; */
     background-color: #ccc;
     border-radius: 100%;
 }

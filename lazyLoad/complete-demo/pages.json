@@ -1,41 +1,46 @@
 {
-  "pages": [
-    //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
-    {
-      "path": "pages/index/index",
-      "style": {
-        "navigationBarTitleText": "uni-app"
-      }
-    },
-    {
-      "path": "pages/horizontal/index",
-      "style": {
-        "navigationBarTitleText": "y轴滑动"
-      }
-    },
-    {
-      "path": "pages/horizontal/native",
-      "style": {
-        "navigationBarTitleText": "y轴滑动-原生"
-      }
-    },
-    {
-      "path": "pages/horizontal/nav",
-      "style": {
-        "navigationBarTitleText": "y轴滑动-选项卡"
-      }
-    },
-    {
-      "path": "pages/vertical/index",
-      "style": {
-        "navigationBarTitleText": "x轴滑动"
-      }
+    "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+        {
+            "path": "pages/index/index",
+            "style": {
+                "navigationBarTitleText": "uni-app"
+            }
+        },
+        {
+            "path": "pages/type/index",
+            "style": {
+                "navigationBarTitleText": "基本使用"
+            }
+        },
+        {
+            "path": "pages/type/native",
+            "style": {
+                "navigationBarTitleText": "原生事件"
+            }
+        },
+        {
+            "path": "pages/type/vertical",
+            "style": {
+                "navigationBarTitleText": "横屏加载"
+            }
+        },
+        {
+            "path": "pages/type/tabs",
+            "style": {
+                "navigationBarTitleText": "tab切换"
+            }
+        },
+        {
+            "path": "pages/type/many",
+            "style": {
+                "navigationBarTitleText": "多加载"
+            }
+        }
+    ],
+    "globalStyle": {
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "uni-app",
+        "navigationBarBackgroundColor": "#F8F8F8",
+        "backgroundColor": "#F8F8F8"
     }
-  ],
-  "globalStyle": {
-    "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "uni-app",
-    "navigationBarBackgroundColor": "#F8F8F8",
-    "backgroundColor": "#F8F8F8"
-  }
 }
