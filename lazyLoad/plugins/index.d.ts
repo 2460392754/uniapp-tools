@@ -35,7 +35,7 @@ class App {
     getConfig(): configArgs
     setScrollId(id: string): void
     on(args: onArgs): void
-    destroy(): void
+    destroy(id: string): void
 }
 
 declare const LazyLoad = new App();

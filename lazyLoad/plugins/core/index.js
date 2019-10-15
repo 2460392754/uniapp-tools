@@ -36,6 +36,8 @@ class App {
 
     // 监听滚动条 + 节流
     scroll () {
+        // console.log('scroll', this._data.scroll.status)
+
         if (!this._data.scroll.status) {
             return;
         }
@@ -82,8 +84,8 @@ class App {
     }
 
     // 卸载数据
-    destroy () {
-        subscribe.offAll(this._data.scroll.id);
+    destroy (id) {
+        subscribe.offAll(id || this._data.scroll.id);
     }
 }
 
@@ -157,8 +159,8 @@ const emit = async function (id, list) {
             run()
         }
 
-        function run () {
-            return valItem.checkFuns(valItem.item).then(res => {
+        async function run () {
+            await valItem.checkFuns(valItem.item).then(res => {
                 off(id, valItem.item);
                 msg = res;
                 code = 1;
@@ -166,14 +168,14 @@ const emit = async function (id, list) {
                 flag = false;
                 msg = err;
                 code = 0;
-            }).finally(() => {
-                Tools.debug(`
-                    emit ${code ? 'success' : 'error'}, 
-                    index: ${index}, 
-                    guid: ${guid},
-                    msg: ${msg}
-                `, code)
             })
+
+            Tools.debug(`
+                emit ${code ? 'success' : 'error'}, 
+                index: ${index}, 
+                guid: ${guid},
+                msg: ${msg}
+            `, code);
         }
     }
 

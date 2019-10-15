@@ -252,10 +252,12 @@ export default {
     }
 
     .loading-img {
-        animation: ball-scale-multiple 2s 0s linear infinite;
+        // animation: ball-scale-multiple 2s 0s linear infinite;
+        animation: BallScaleMultiple 2s 0s linear infinite;
     }
 
-    @keyframes ball-scale-multiple {
+    // @keyframes ball-scale-multiple {
+    @keyframes BallScaleMultiple {
         0% {
             transform: rotate(0deg);
         }

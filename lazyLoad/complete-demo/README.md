@@ -1,7 +1,7 @@
 # pocky-lazyLoad
 
 <a href="https://github.com/2460392754/uniapp-tools">
-<img src="https://img.shields.io/badge/version-1.3.0-blue.svg?cacheSeconds=2592000" />
+<img src="https://img.shields.io/badge/version-1.3.1-blue.svg?cacheSeconds=2592000" />
 <img src="https://badgen.net/github/stars/2460392754/uniapp-tools">
 <img src="https://badgen.net/github/forks/2460392754/uniapp-tools">
 </a>
@@ -18,6 +18,11 @@
 - 支持scroll节流
 - 支持选项卡切换
 - 支持多加载
+
+## BUG
+问题：app端出现只能加载第一次图片<br />
+解决办法：[查看文档](https://www.yuque.com/pocky/aaeyux/my9eft#EtiWW)
+
 
 ## 文档、demo、兼容性测试
 
