@@ -70,17 +70,5 @@
     "mp-toutiao": {
         "usingComponents": true
     },
-    "h5": {
-        "devServer": {
-            "port": 8880,
-            "disableHostCheck": true,
-            "proxy": {
-                "/dummyimage.com": {
-                    "target": "https://dummyimage.com/",
-                    "changeOrigin": true,
-                    "secure": false
-                }
-            }
-        }
-    }
+    "h5": {}
 }

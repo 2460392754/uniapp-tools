@@ -1,7 +1,7 @@
 # pocky-request
 
 <a href="https://github.com/2460392754/uniapp-tools">
-<img src="https://img.shields.io/badge/version-2.0.3.3-blue.svg?cacheSeconds=2592000" />
+<img src="https://img.shields.io/badge/version-2.0.3.4-blue.svg?cacheSeconds=2592000" />
 <img src="https://badgen.net/github/stars/2460392754/uniapp-tools">
 <img src="https://badgen.net/github/forks/2460392754/uniapp-tools">
 </a>
@@ -10,14 +10,14 @@
 
 <font color="red">**推荐先下载示例项目**</font><br />
 
-- 支持 Promise
-- 支持全局、局部(实例)的请求和响应拦截器
-- 支持添加多个、删除拦截器，并在响应拦截器中添加发送请求的 config 数据
-- 支持添加配置文件
-- 支持所有 method 方法
-- 支持 params 参数属性
-- 支持文件上传和下载
-- 支持重新发送请求(刷新 token)
+-   支持 Promise
+-   支持全局、局部(实例)的请求和响应拦截器
+-   支持添加多个、删除拦截器，并在响应拦截器中添加发送请求的 config 数据
+-   支持添加配置文件
+-   支持所有 method 方法
+-   支持 params 参数属性
+-   支持文件上传和下载
+-   支持重新发送请求(刷新 token)
 
 ## 可视化展示插件
 
@@ -29,7 +29,7 @@
 
 ## TODO
 
-- 实现 ts
+-   实现 ts
 
 ## 最后
 
