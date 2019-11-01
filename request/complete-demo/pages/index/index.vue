@@ -1,17 +1,14 @@
 <template>
     <view id="index-page">
-        <navigator v-for="(item,index) of list"
-                   :key="index"
-                   :url="item.path">
-            <button class='btn'
-                    type="primary">{{item.title}}</button>
+        <navigator v-for="(item,index) of list" :key="index" :url="item.path">
+            <button class="btn" type="primary">{{item.title}}</button>
         </navigator>
     </view>
 </template>
 
 <script>
 export default {
-    data () {
+    data() {
         return {
             list: [
                 { title: 'get 200', path: '/pages/method/get_200' },
@@ -21,9 +18,9 @@ export default {
                 { title: 'upload', path: '/pages/method/upload' },
                 { title: 'check token', path: '/pages/method/check_token' },
             ]
-        }
-    },
-}
+        };
+    }
+};
 </script>
 
 <style lang="scss">

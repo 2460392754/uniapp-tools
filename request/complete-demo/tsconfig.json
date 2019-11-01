@@ -1,0 +1,38 @@
+{
+    "compilerOptions": {
+        // 输入文件的字符集。
+        "charset": "utf8",
+        // 生成相应的.map文件
+        "sourceMap": true,
+        // 允许从没有设置默认导出的模块中默认导入。这并不影响代码的显示，仅为了类型检查。
+        "allowSyntheticDefaultImports": true,
+        // 指定ECMAScript目标版本"ES3"（默认）
+        "target": "es5",
+        // 决定如何处理模块。或者是"Node"对于Node.js/io.js，或者是"Classic"（默认）
+        "moduleResolution": "node",
+        // 指定生成哪个模块系统代码
+        "module": "umd",
+        // 重定向输出目录
+        "outDir": "./dist",
+        // 启用实验性的ES装饰器。
+        "experimentalDecorators": true,
+        // 删除所有注释，除了以 /!*开头的版权信息。
+        "removeComments": true,
+        // 保留const和enum声明
+        "preserveConstEnums": true,
+        // 允许编译javascript文件
+        "allowJs": true,
+        "lib": ["es6", "es2017"],
+        // 提供迭代器全面支持
+        "downlevelIteration": true
+        // 显示诊断信息。
+        // "diagnostics": true,
+        //生成相应的 .d.ts文件（类似Objc中的.h文件）
+        //   "declaration": true,
+        //单独为头文件指定存放的位置
+        //   "declarationDir": "./@types"
+    },
+    // "include": ["src/**/*"],
+    // 不包含的编译目录
+    "exclude": ["node_modules", "dist"]
+}

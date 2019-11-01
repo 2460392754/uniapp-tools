@@ -1,24 +1,15 @@
 type Method =
     | 'get'
-    | 'GET'
     | 'post'
-    | 'POST'
     | 'put'
-    | 'PUT'
     | 'delete'
-    | 'DELETE'
+    | 'connect'
     | 'head'
-    | 'HEAD'
     | 'options'
-    | 'OPTIONS'
-    | 'patch'
-    | 'PATCH'
-    | 'download'
-    | 'DOWNLOAD'
+    | 'trace'
     | 'upload'
-    | 'UPLOAD'
-    | 'abort'
-    | 'ABORT';
+    | 'download'
+    | 'abort';
 
 // 请求相同配置
 interface SameConfig {
@@ -76,8 +67,8 @@ interface Interceptor<V> {
 
 // 实例
 interface Instance {
-    // (config: RequestConfig);
-    // (url: string, config?: RequestConfig);
+    (config: RequestConfig);
+    (url: string, config?: RequestConfig);
     interceptors: {
         global: {
             request: Interceptor<RequestConfig>;
@@ -93,9 +84,10 @@ interface Instance {
     post(url: string, config?: RequestConfig): Promise<any>;
     put(url: string, config?: RequestConfig): Promise<any>;
     delete(url: string, config?: RequestConfig): Promise<any>;
+    connect(url: string, config?: RequestConfig): Promise<any>;
     head(url: string, config?: RequestConfig): Promise<any>;
     options(url: string, config?: RequestConfig): Promise<any>;
-    patch(url: string, config?: RequestConfig): Promise<any>;
+    trace(url: string, config?: RequestConfig): Promise<any>;
     download(url: string, config?: DownloadConfig): Promise<any>;
     upload(url: string, config: uploadConfig): Promise<any>;
     abort(): void;

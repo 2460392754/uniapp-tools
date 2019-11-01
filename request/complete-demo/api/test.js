@@ -10,13 +10,10 @@ export default {
                 console.log('is scoped request');
 
                 return config;
-                // return false;
-                // return Promise.reject('xxx')
             },
             (err) => {
                 console.error('scoped request: ', err);
 
-                // return Promise.reject(err)
                 return false;
             }
         );
@@ -26,8 +23,6 @@ export default {
                 console.log('is scoped response');
 
                 return res;
-                // return false;
-                // return Promise.reject('xxx')
             },
             (err) => {
                 console.error('scoped response: ', err);
@@ -50,9 +45,6 @@ export default {
                 name: 'xxx',
                 age: 20
             },
-            data: {
-                text: 'method type is get'
-            }
         });
 
         // 超时 3000ms 就中断请求
@@ -111,7 +103,7 @@ export default {
             .get('/test/download')
             .then((res) => {
                 console.log('is then', res);
-                return res.data.data.img;
+                return res.data.img;
             })
             .then((path) =>
                 r.download(path, {
